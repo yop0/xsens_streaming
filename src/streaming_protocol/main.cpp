@@ -26,17 +26,15 @@
 
 #include "udpserver.h"
 #include "streamer.h"
-//#include <conio.h>
 #include <xstypes/xstime.h>
 
 int main(int argc, char *argv[])
 {
-	std::string hostDestinationAddress = "localhost";
+	std::string hostDestinationAddress = "192.168.1.42";
 	int port = 9763;
 
 	UdpServer udpServer(hostDestinationAddress, (uint16_t)port);
 
-	//while (!_kbhit())
 	while(true)
 		XsTime::msleep(10);
 

@@ -42,7 +42,7 @@ protected:
 private:
 	std::map<std::string, std::string> m_items;
 	std::vector<std::string> split(std::string str, char delimiter);
-	std::string MetaDatagram::join(std::vector<std::string> strList, char* delimiter);
+	std::string join(std::vector<std::string> strList, char* delimiter);
 
 	std::string itemData(const std::string &itemName) const;
 	bool hasItem(const std::string &itemName) const;

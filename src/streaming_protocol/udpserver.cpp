@@ -26,7 +26,7 @@
 
 #include "udpserver.h"
 
-DWORD WINAPI udpThreadFunc(LPVOID param)
+uint32_t udpThreadFunc(void * param)
 {
 	UdpServer* server = (UdpServer*) param;
 	server->readMessages();
@@ -48,7 +48,7 @@ UdpServer::UdpServer(XsString address, uint16_t port)
 	if (res == XRV_OK)
 		startThread();
 	else
-		std::cout << "Failed to bind..." << std::endl;
+		std::cout << "Failed to bind UDP socket (host: " << m_hostName << ", port: " << m_port << ")" << std::endl;
 }
 
 UdpServer::~UdpServer()
@@ -86,7 +86,8 @@ void UdpServer::startThread()
 
 	m_started = true;
 	m_stopping = false;
-	xsStartThread(udpThreadFunc, this, 0);
+	typedef void * (*ftype)(void *);
+	xsStartThread((ftype)&udpThreadFunc, this, 0);
 }
 
 void UdpServer::stopThread()

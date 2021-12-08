@@ -37,3 +37,8 @@ udpserver.h
 
 add_executable(streaming_protocol ${STREAMING_PROTOCOL_SRC} ${STREAMING_PROTOCOL_HEADERS})
 target_include_directories(streaming_protocol PUBLIC ${PROJECT_SOURCE_DIR}/include)
+target_link_directories(streaming_protocol PUBLIC ${PROJECT_SOURCE_DIR}/lib)
+target_link_libraries(streaming_protocol PUBLIC
+    xstypes
+    pthread
+)

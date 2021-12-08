@@ -28,7 +28,7 @@
 
 /*! \class MetaDatagram
 	Meta data (type 0x12)
-	This packet contains some meta-data about the character. This is in a tagged format, each tag is formatted as “tagname:tagdata” and each tagline is terminated by a newline. Each value is a string that can be interpreted in its own way.
+	This packet contains some meta-data about the character. This is in a tagged format, each tag is formatted as ï¿½tagname:tagdataï¿½ and each tagline is terminated by a newline. Each value is a string that can be interpreted in its own way.
 */
 
 /*! Construct a meta data datagram */
@@ -102,7 +102,7 @@ void MetaDatagram::deserializeData(Streamer &inputStreamer)
 			// how nice of us to take this into account
 			key = keyvalue[0];
 			keyvalue.erase(keyvalue.begin(), keyvalue.begin());
-			value = join(keyvalue,":");
+			value = join(keyvalue, (char *)":");
 		}
 		else
 			continue; // report error?
