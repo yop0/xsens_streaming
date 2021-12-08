@@ -79,7 +79,7 @@ void EulerDatagram::deserializeData(Streamer &inputStreamer)
 
 		// Store the position in a Vector. The coordinates use a Y-Up
 		for (int k = 0; k < 3; k++)
-			streamer->read((float)kin.pos[k]);
+			streamer->read(static_cast<float&>(kin.pos[k]));
 
 		for (int k = 0; k < 3; k++)
 			kin.pos[k] /= EULERPOSITIONSCALE;
@@ -89,7 +89,7 @@ void EulerDatagram::deserializeData(Streamer &inputStreamer)
 
 		// The rotation is based to the coordinates Y-Up
 		for (int k = 0; k < 3; k++)
-			streamer->read((float)rotation[k]);
+			streamer->read(static_cast<float&>(rotation[k]));
 
 		// create Euler vector based from the rotation cordinates
 		XsEuler euler(rotation[0], rotation[1], rotation[2]);

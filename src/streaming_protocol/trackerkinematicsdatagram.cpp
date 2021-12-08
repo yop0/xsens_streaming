@@ -32,22 +32,22 @@
 	Information about each tracker is sent as follows.
 
 	4 bytes associated segment ID
-	4 bytes q1 rotation – sensor rotation quaternion component 1 (re)
-	4 bytes q2 rotation – sensor rotation quaternion component 2 (i)
-	4 bytes q3 rotation – sensor rotation quaternion component 3 (j)
-	4 bytes q4 rotation – sensor rotation quaternion component 4 (k)
-	4 bytes x–coordinate of sensor free acc
-	4 bytes y–coordinate of sensor free acc
-	4 bytes z–coordinate of sensor free acc
-	4 bytes x–coordinate of sensor acc
-	4 bytes y–coordinate of sensor acc
-	4 bytes z–coordinate of sensor acc
-	4 bytes x–coordinate of sensor gyr
-	4 bytes y–coordinate of sensor gyr
-	4 bytes z–coordinate of sensor gyr
-	4 bytes x–coordinate of sensor mag
-	4 bytes y–coordinate of sensor mag
-	4 bytes z–coordinate of sensor mag
+	4 bytes q1 rotation ï¿½ sensor rotation quaternion component 1 (re)
+	4 bytes q2 rotation ï¿½ sensor rotation quaternion component 2 (i)
+	4 bytes q3 rotation ï¿½ sensor rotation quaternion component 3 (j)
+	4 bytes q4 rotation ï¿½ sensor rotation quaternion component 4 (k)
+	4 bytes xï¿½coordinate of sensor free acc
+	4 bytes yï¿½coordinate of sensor free acc
+	4 bytes zï¿½coordinate of sensor free acc
+	4 bytes xï¿½coordinate of sensor acc
+	4 bytes yï¿½coordinate of sensor acc
+	4 bytes zï¿½coordinate of sensor acc
+	4 bytes xï¿½coordinate of sensor gyr
+	4 bytes yï¿½coordinate of sensor gyr
+	4 bytes zï¿½coordinate of sensor gyr
+	4 bytes xï¿½coordinate of sensor mag
+	4 bytes yï¿½coordinate of sensor mag
+	4 bytes zï¿½coordinate of sensor mag
 
 	Total: 68 bytes per sensor
 
@@ -83,23 +83,23 @@ void TrackerKinematicsDatagram::deserializeData(Streamer &inputStreamer)
 
 		// Store the Sensor rotation in a Vector -> 16 byte	(4 x 4 byte)
 		for (int k = 0; k < 4; k++)
-			streamer->read((float)kin.sens_rot[k]);
+			streamer->read(static_cast<float&>(kin.sens_rot[k]));
 
 		// Store the Sensor free acceleration in a Vector -> 12 byte	(3 x 4 byte)
 		for (int k = 0; k < 3; k++)
-			streamer->read((float)kin.sen_freeAcc[k]);
+			streamer->read(static_cast<float&>(kin.sen_freeAcc[k]));
 
 		// Store the  Sensor Acceleration in a Vector -> 12 byte	(3 x 4 byte)
 		for (int k = 0; k < 3; k++)
-			streamer->read((float)kin.sen_acc[k]);
+			streamer->read(static_cast<float &>(kin.sen_acc[k]));
 
 		// Store the Sensor gyroscope in a Vector -> 12 byte	(3 x 4 byte)
 		for (int k = 0; k < 3; k++)
-			streamer->read((float)kin.sen_gyr[k]);
+			streamer->read(static_cast<float&>(kin.sen_gyr[k]));
 
 		// Store the Sensor magnetometer a Vector -> 12 byte	(3 x 4 byte)
 		for (int k = 0; k < 3; k++)
-			streamer->read((float)kin.sen_mag[k]);
+			streamer->read(static_cast<float &>(kin.sen_mag[k]));
 
 		m_data.push_back(kin);
 	}

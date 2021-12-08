@@ -33,9 +33,9 @@
 	The data sent per item is:
 
 	4 bytes segment ID, in the range 1-30
-	4 bytes x–offset of segment relative to default position
-	4 bytes y–offset of segment relative to default position
-	4 bytes z–offset of segment relative to default position
+	4 bytes xï¿½offset of segment relative to default position
+	4 bytes yï¿½offset of segment relative to default position
+	4 bytes zï¿½offset of segment relative to default position
 
 	9x4 bytes matrix containing the rotation and scale of the segment relative to the default
 	n bytes containing a null-terminated string with the name of the segment
@@ -71,7 +71,7 @@ void ScaleDatagram::deserializeData(Streamer &inputStreamer)
 
 	// 4 bytes: the number of segments as an unsigned integer
 	int32_t numberOfSegments = 0;
-	streamer->read((int32_t)numberOfSegments);
+	streamer->read(static_cast<int32_t&>(numberOfSegments));
 
 	for (int i=0; i < numberOfSegments; i++)
 	{
@@ -79,7 +79,7 @@ void ScaleDatagram::deserializeData(Streamer &inputStreamer)
 
 		// String: the name of the segment
 		int32_t stringSize = 0;
-		streamer->read((int32_t)stringSize);
+		streamer->read(static_cast<int32_t &>(stringSize));
 
 		std::string str;
 		streamer->read(str, stringSize);
@@ -87,7 +87,7 @@ void ScaleDatagram::deserializeData(Streamer &inputStreamer)
 
 		// 3-component vector: the position of the origin of the segment in the null pose
 		for (int k = 0; k < 3; k++)
-			streamer->read((float)nullPosDef.pos[k]);
+			streamer->read(static_cast<float&>(nullPosDef.pos[k]));
 
 		m_tPose.push_back(nullPosDef);
 	}
@@ -99,16 +99,16 @@ void ScaleDatagram::deserializeData(Streamer &inputStreamer)
 	{
 		// 4 bytes containing an unsigned integer: the number of points
 		int32_t numberOfPoints = 0;
-		streamer->read((int32_t)numberOfPoints);
+		streamer->read(static_cast<int32_t&>(numberOfPoints));
 		for (int i=0; i < numberOfPoints; i++)
 		{
 			PointDefinition pointDef;
 
 			// 2 bytes: the id of the segment containing the point
-			streamer->read((int16_t)pointDef.segmentId);
+			streamer->read(static_cast<int16_t&>(pointDef.segmentId));
 
 			// 2 bytes: the point id of the point within the segment
-			streamer->read((int16_t)pointDef.pointId);
+			streamer->read(static_cast<int16_t&>(pointDef.pointId));
 
 			// The last packet is the one that will end up in one datagram with 0 points.
 			if (pointDef.pointId < 0)
@@ -116,17 +116,17 @@ void ScaleDatagram::deserializeData(Streamer &inputStreamer)
 
 			// String: the name of the segment
 			int32_t stringSize = 0;
-			streamer->read((int32_t)stringSize);
+			streamer->read(static_cast<int32_t&>(stringSize));
 			std::string str;
 			streamer->read(str, stringSize);
 			pointDef.segmentName = str;
 
-			// 4 bytes: unsigned integer containing flags describing the point’s characteristics
-			streamer->read((int32_t)pointDef.characteristicOfPoint);
+			// 4 bytes: unsigned integer containing flags describing the pointï¿½s characteristics
+			streamer->read(static_cast<int32_t&>(pointDef.characteristicOfPoint));
 
 			// 3-component vector: the position of the point relative to the segment origin in the null pose
 			for (int k = 0; k < 3; k++)
-				streamer->read((float)pointDef.pos[k]);
+				streamer->read(static_cast<float&>(pointDef.pos[k]));
 
 			m_pointDefinitions.push_back(pointDef);
 		}
@@ -199,7 +199,7 @@ void ScaleDatagram::printPointData(PointDefinition const& p) const
 	// a string containing the name of the segment
 	std::cout << "Segment Name: " << p.segmentName << std::endl;
 
-	// 4 bytes: unsigned integer containing flags describing the point’s characteristics
+	// 4 bytes: unsigned integer containing flags describing the pointï¿½s characteristics
 	std::cout << "Characteristics of point: " << p.characteristicOfPoint << std::endl;
 
 	// 3-compxonent vector: the position of the point relative to the segment origin in the null pose
