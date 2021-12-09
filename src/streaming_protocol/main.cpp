@@ -27,13 +27,31 @@
 #include "udpserver.h"
 #include "streamer.h"
 #include <xsens/xstime.h>
+#include <boost/program_options.hpp>
+namespace po = boost::program_options;
 
 int main(int argc, char *argv[])
 {
-	std::string hostDestinationAddress = "192.168.1.42";
-	int port = 9763;
+  auto host = std::string{};
+  auto port = 0u;
+  po::options_description desc("xsens_streaming_sample options");
+  // clang-format off
+  desc.add_options()
+    ("help", "Produce this message")
+  	("host,h", po::value<std::string>(&host)->default_value("localhost"), "connection host")
+  	("port,p", po::value<unsigned int>(&port)->default_value(9763), "connection port");
+  // clang-format on
+  /* Parse command line arguments */
+  po::variables_map vm;
+  po::store(po::parse_command_line(argc, argv, desc), vm);
+  po::notify(vm);
+  if(vm.count("help"))
+  {
+    std::cout << desc << std::endl;
+    return 1;
+  }
 
-	UdpServer udpServer(hostDestinationAddress, (uint16_t)port);
+	UdpServer udpServer(host, (uint16_t)port);
 
 	while(true)
 		XsTime::msleep(10);

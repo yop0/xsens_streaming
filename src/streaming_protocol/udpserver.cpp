@@ -53,7 +53,7 @@ void UdpServer::readMessages()
 {
 	XsByteArray buffer;
 
-	std::cout << "Waiting to receive packets from the client on port " << m_port << " ..." << std::endl << std::endl;
+	std::cout << "Waiting to receive packets from the client \"" << m_hostName << "\" on port \"" << m_port << "\" ..." << std::endl << std::endl;
 
 	while (!m_stopping)
 	{

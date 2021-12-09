@@ -17,9 +17,12 @@ sudo make install
 ```
 ## Testing
 
-A sample program is provided to read and print the received data
+A sample program is provided to read and print the received data:
 
 ```sh
-xsens_streaming_sample
+xsens_streaming_sample -h <hostname> -p <port>
 ```
 
+Where:
+- the hostname is the IP of the machine running the xsens_streaming client (running xsens_streaming_sample)
+- Xsens MVN Analyze software has its "Network Streamer" configured to stream to `<hostname> <port>` over UDP.

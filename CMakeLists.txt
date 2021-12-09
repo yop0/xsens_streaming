@@ -12,6 +12,8 @@ include(cmake/base.cmake)
 
 project(${PROJECT_NAME} LANGUAGES C CXX)
 
+find_package(Boost REQUIRED COMPONENTS program_options)
+
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 add_project_dependency(Threads REQUIRED)
 

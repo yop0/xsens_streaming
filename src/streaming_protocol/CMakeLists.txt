@@ -48,6 +48,7 @@ install(TARGETS streaming_protocol
 
 add_executable(xsens_streaming_sample main.cpp)
 target_link_libraries(xsens_streaming_sample streaming_protocol)
+target_link_libraries(xsens_streaming_sample Boost::program_options)
 set_target_properties(xsens_streaming_sample PROPERTIES INSTALL_RPATH "${MTSDK_LIBRARY_DIR}") # "/usr/local/xsens/lib64")
 
 install(TARGETS xsens_streaming_sample)
