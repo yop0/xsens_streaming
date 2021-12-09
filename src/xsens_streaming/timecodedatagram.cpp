@@ -24,35 +24,53 @@
   OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#ifndef UDPSERVER_H
-#define UDPSERVER_H
+#include <xsens_streaming/timecodedatagram.h>
 
-#include "parsermanager.h"
-#include "streamer.h"
-#include <atomic>
-#include <thread>
-#include <xsens/xssocket.h>
-#include <xsens/xsthread.h>
+/*! \class TimeCodeDatagram
+  \brief a Time Code datagram (type 0x25)
 
-class UdpServer
+  Information about each segment is sent as follows.
+
+  4 bytes String size (12 byte)
+  12-byte timecode string: HH:MM:SS.mmm
+
+  Total: 16 bytes per segment
+*/
+
+/*! Constructor */
+TimeCodeDatagram::TimeCodeDatagram() : Datagram()
 {
-public:
-  UdpServer(XsString address = "localhost", uint16_t port = 9763);
-  ~UdpServer();
+  setType(SPTimeCode);
+}
 
-  void readMessages();
-  void startThread();
-  void stopThread();
+/*! Destructor */
+TimeCodeDatagram::~TimeCodeDatagram() {}
 
-private:
-  std::thread m_th;
-  std::unique_ptr<XsSocket> m_socket;
-  uint16_t m_port;
-  XsString m_hostName;
+/*! Deserialize the data from \a arr
+  \sa serializeData
+*/
+void TimeCodeDatagram::deserializeData(Streamer & inputStreamer)
+{
+  Streamer * streamer = &inputStreamer;
 
-  std::unique_ptr<ParserManager> m_parserManager;
+  int32_t stringSize = 0;
+  streamer->read(stringSize);
 
-  volatile std::atomic_bool m_started, m_stopping;
-};
+  std::string str;
+  streamer->read(str, 12);
+  int h, m, s, n;
 
-#endif
+  sscanf(str.c_str(), "%d:%d:%d.%d", &h, &m, &s, &n);
+  m_hour = h;
+  m_minute = m;
+  m_second = s;
+  m_nano = 1000000 * n;
+}
+
+/*! Print Time Code datagram in a formatted way
+ */
+void TimeCodeDatagram::printData() const
+{
+  printf("%d:%d:%d.%d", m_hour, m_minute, m_second, m_nano);
+  std::cout << std::endl;
+}

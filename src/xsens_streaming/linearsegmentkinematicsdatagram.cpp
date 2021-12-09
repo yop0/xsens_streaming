@@ -24,82 +24,60 @@
   OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#include "eulerdatagram.h"
-#include <xsens/xseuler.h>
-#include <xsens/xsquaternion.h>
+#include <xsens_streaming/linearsegmentkinematicsdatagram.h>
 
-/*! \class EulerDatagram
-  \brief a Position & Euler orientation pose datagram (type 01)
+/*! \class LinearSegmentKinematicsDatagram
+  \brief a Linear Segment Kinematics datagram (type 0x21)
 
-  Segment data Euler (type 01)
   Information about each segment is sent as follows.
 
   4 bytes segment ID, in the range 1-30
-  4 bytes x of segment position
-  4 bytes y of segment position
-  4 bytes z of segment position
-  4 bytes x of segment rotation
-  4 bytes y of segment rotation
-  4 bytes z of segment rotation
+  4 bytes x�coordinate of segment position
+  4 bytes y�coordinate of segment position
+  4 bytes z�coordinate of segment position
+  4 bytes x�coordinate of segment velocity
+  4 bytes y�coordinate of segment velocity
+  4 bytes z�coordinate of segment velocity
+  4 bytes x�coordinate of segment acceleration
+  4 bytes y�coordinate of segment acceleration
+  4 bytes z�coordinate of segment acceleration
 
-  Total: 28 bytes per segment
+  Total: 40 bytes per segment
 
-  The coordinates use a Y-Up, right-handed coordinate system.
-*/
+  The coordinates use a Z-Up, right-handed coordinate system.
+  */
 
 /*! Constructor */
-EulerDatagram::EulerDatagram() : Datagram()
+LinearSegmentKinematicsDatagram::LinearSegmentKinematicsDatagram() : Datagram()
 {
-  setType(SPPoseEuler);
+  setType(SPLinearSegmentKinematics);
 }
 
 /*! Destructor */
-EulerDatagram::~EulerDatagram() {}
+LinearSegmentKinematicsDatagram::~LinearSegmentKinematicsDatagram() {}
 
 /*! Deserialize the data from \a arr
   \sa serializeData
 */
-void EulerDatagram::deserializeData(Streamer & inputStreamer)
+void LinearSegmentKinematicsDatagram::deserializeData(Streamer & inputStreamer)
 {
   Streamer * streamer = &inputStreamer;
 
   for(int i = 0; i < dataCount(); i++)
   {
     Kinematics kin;
-    float orientation[4];
-    float rotation[3];
-    XsQuaternion quaternion;
-    XsQuaternion tempQuat;
 
     // Store the segement Id -> 4 byte
     streamer->read(kin.segmentId);
 
-    // Store the position in a Vector. The coordinates use a Y-Up
-    for(int k = 0; k < 3; k++) streamer->read(static_cast<float &>(kin.pos[k]));
+    // Store the Segment Position in a Vector -> 12 byte	(3 x 4 byte)
+    for(int k = 0; k < 3; k++) streamer->read(kin.pos[k]);
 
-    for(int k = 0; k < 3; k++) kin.pos[k] /= EULERPOSITIONSCALE;
+    // Store the Segment Velocity in a Vector -> 12 byte	(3 x 4 byte)
+    for(int k = 0; k < 3; k++) streamer->read(kin.velocity[k]);
 
-    // Covert the coordinates to Z-Up
-    convertFromYupToZup(kin.pos);
-
-    // The rotation is based to the coordinates Y-Up
-    for(int k = 0; k < 3; k++) streamer->read(static_cast<float &>(rotation[k]));
-
-    // create Euler vector based from the rotation cordinates
-    XsEuler euler(rotation[0], rotation[1], rotation[2]);
-
-    // convert the Euler vector to quaternion
-    quaternion.fromEulerAngles(euler);
-
-    // create a quaternion with the inverted components (x,y,z)
-    tempQuat = XsQuaternion(quaternion[0], quaternion[3], quaternion[1], quaternion[2]);
-
-    // covert from Euler to Quaternion again
-    euler.fromQuaternion(tempQuat);
-
-    kin.rotation[0] = euler[0];
-    kin.rotation[1] = euler[1];
-    kin.rotation[2] = euler[2];
+    // Store the Segmetn Acceleration in a Vector -> 12 byte	(3 x 4 byte)
+    for(int k = 0; k < 3; k++) streamer->read(kin.acceleration[k]);
 
     m_data.push_back(kin);
   }
@@ -107,24 +85,30 @@ void EulerDatagram::deserializeData(Streamer & inputStreamer)
 
 /*! Print Data datagram in a formatted way
  */
-void EulerDatagram::printData() const
+void LinearSegmentKinematicsDatagram::printData() const
 {
   for(int i = 0; i < m_data.size(); i++)
   {
     std::cout << "Segment ID: " << m_data.at(i).segmentId << std::endl;
-
-    // Position
+    // Segment Position
     std::cout << "Segment Position: "
               << "(";
     std::cout << "x: " << m_data.at(i).pos[0] << ", ";
     std::cout << "y: " << m_data.at(i).pos[1] << ", ";
     std::cout << "z: " << m_data.at(i).pos[2] << ")" << std::endl;
 
-    // Orientation
-    std::cout << "Segment rotation: "
+    // Segment Velocity
+    std::cout << "Segment Velocity: "
               << "(";
-    std::cout << "x: " << m_data.at(i).rotation[0] << ", ";
-    std::cout << "y: " << m_data.at(i).rotation[1] << ", ";
-    std::cout << "z: " << m_data.at(i).rotation[2] << ")" << std::endl << std::endl;
+    std::cout << "x: " << m_data.at(i).velocity[0] << ", ";
+    std::cout << "y: " << m_data.at(i).velocity[1] << ", ";
+    std::cout << "z: " << m_data.at(i).velocity[2] << ")" << std::endl;
+
+    // Segment Acceleration
+    std::cout << "Segment Acceleration: "
+              << "(";
+    std::cout << "x: " << m_data.at(i).acceleration[0] << ", ";
+    std::cout << "y: " << m_data.at(i).acceleration[1] << ", ";
+    std::cout << "z: " << m_data.at(i).acceleration[2] << ")" << std::endl << std::endl;
   }
 }

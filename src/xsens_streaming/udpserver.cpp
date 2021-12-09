@@ -24,7 +24,7 @@
   OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#include "udpserver.h"
+#include <xsens_streaming/udpserver.h>
 
 UdpServer::UdpServer(XsString address, uint16_t port) : m_started(false), m_stopping(false)
 {
@@ -59,7 +59,12 @@ void UdpServer::readMessages()
   {
     // std::cout << ".";
     int rv = m_socket->read(buffer);
-    if(buffer.size() > 0) m_parserManager->readDatagram(buffer);
+    if(buffer.size() > 0)
+    {
+      auto datagram = m_parserManager->readDatagram(buffer);
+      std::lock_guard<std::mutex> lock(m_datagramMutex);
+      m_datagram = std::move(datagram);
+    }
 
     buffer.clear();
     XsTime::msleep(1);
@@ -69,6 +74,12 @@ void UdpServer::readMessages()
 
   m_stopping = false;
   m_started = false;
+}
+
+const Datagram & UdpServer::datagram() const
+{
+  std::lock_guard<std::mutex> lock(m_datagramMutex);
+  return *m_datagram;
 }
 
 void UdpServer::startThread()

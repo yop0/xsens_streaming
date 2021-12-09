@@ -1,1 +1,1 @@
-add_subdirectory(streaming_protocol)
+add_subdirectory(xsens_streaming)

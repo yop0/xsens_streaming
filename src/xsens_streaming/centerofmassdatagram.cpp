@@ -24,16 +24,16 @@
   OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#include "centerofmassdatagram.h"
+#include <xsens_streaming/centerofmassdatagram.h>
 
 /*! \class CenterOfMassDatagram
   \brief a Center of Mass datagram (type 0x24)
 
   Information about the segment of mass is sent as follows.
 
-  4 bytes x–coordinate of position
-  4 bytes y–coordinate of position
-  4 bytes z–coordinate of position
+  4 bytes xï¿½coordinate of position
+  4 bytes yï¿½coordinate of position
+  4 bytes zï¿½coordinate of position
 
   Total: 12 bytes
 

@@ -24,8 +24,8 @@
   OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#include "quaterniondatagram.h"
 #include <xsens/xsmath.h>
+#include <xsens_streaming/quaterniondatagram.h>
 
 /*! \class QuaternionDatagram
   \brief a Position & Quaternion orientation pose datagram (type 02)

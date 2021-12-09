@@ -24,7 +24,7 @@
   OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#include "scaledatagram.h"
+#include <xsens_streaming/scaledatagram.h>
 
 /*! \class ScaleDatagram
   Scale information (type 0x10)

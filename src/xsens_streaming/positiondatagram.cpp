@@ -24,70 +24,71 @@
   OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#include "jointanglesdatagram.h"
+#include <xsens_streaming/positiondatagram.h>
 
-/*! \class JointAnglesDatagram
-  \brief a Joint Angle datagram (type 0x20)
+/*! \class PositionDatagram
 
-  Information about each joint is sent as follows.
+  Point position data (type 03)
+  Information about each point is sent as follows.
+  This data type is intended to emulate a Virtual (optical) Marker Set.
 
-  4 bytes parent connection identifier: 256 * segment ID + point ID
-  4 bytes child connection identifer: 256 * segment ID + point ID
-  4 bytes x rotation
-  4 bytes y rotation
-  4 bytes z rotation
+  4 bytes point identifier, this is 256 x the segment ID + the point ID
+  4 bytes x�coordinate of point position
+  4 bytes y�coordinate of point position
+  4 bytes z�coordinate of point position
 
-  Total: 20 bytes per joint
+  Total: 16 bytes per point
 
-  The coordinates use a Z-Up, right-handed coordinate system.
+  The coordinates use a Y-Up, right-handed coordinate system.
 */
 
 /*! Constructor */
-JointAnglesDatagram::JointAnglesDatagram() : Datagram()
+PositionDatagram::PositionDatagram() : Datagram()
 {
-  setType(SPJointAngles);
+  setType(SPPosePositions);
 }
 
 /*! Destructor */
-JointAnglesDatagram::~JointAnglesDatagram() {}
+PositionDatagram::~PositionDatagram() {}
 
 /*! Deserialize the data from \a arr
   \sa serializeData
 */
-void JointAnglesDatagram::deserializeData(Streamer & inputStreamer)
+void PositionDatagram::deserializeData(Streamer & inputStreamer)
 {
   Streamer * streamer = &inputStreamer;
 
   for(int i = 0; i < dataCount(); i++)
   {
-    Joint joint;
+    VirtualMarkerSet marker;
 
-    // Parent Connection ID  -> 4 byte
-    streamer->read(joint.parent);
+    // Store the segement Id -> 4 byte
+    streamer->read(marker.segmentId);
 
-    // Child Connection ID -> 4 byte
-    streamer->read(joint.child);
+    // Store the Point Position in a Vector -> 12 byte	(3 x 4 byte)
+    // The coordinates use a Y-Up, right-handed coordinate system.
+    for(int k = 0; k < 3; k++) streamer->read(marker.pointPos[k]);
 
-    // Store the Rotation in a Vector -> 12 byte	(3 x 4 byte)
-    for(int k = 0; k < 3; k++) streamer->read(joint.rotation[k]);
+    for(int k = 0; k < 3; k++) marker.pointPos[k] /= EULERPOSITIONSCALE;
 
-    m_data.push_back(joint);
+    convertFromYupToZup(marker.pointPos);
+
+    m_data.push_back(marker);
   }
 }
 
 /*! Print Data datagram in a formatted way
  */
-void JointAnglesDatagram::printData() const
+void PositionDatagram::printData() const
 {
   for(int i = 0; i < m_data.size(); i++)
   {
-    std::cout << "Parent Connection ID (256 * segment ID + point ID): " << m_data.at(i).parent << std::endl;
-    std::cout << "Child Connection ID (256 * segment ID + point ID): " << m_data.at(i).child << std::endl;
-    // Rotation
-    std::cout << "Rotation: "
+    std::cout << "Segment ID (256 * segment ID + point ID): " << m_data.at(i).segmentId << std::endl;
+    // Point Position
+    std::cout << "Point Position: "
               << "(";
-    std::cout << "x: " << m_data.at(i).rotation[0] << ", ";
-    std::cout << "y: " << m_data.at(i).rotation[1] << ", ";
-    std::cout << "z: " << m_data.at(i).rotation[2] << ")" << std::endl << std::endl;
+    std::cout << "x: " << m_data.at(i).pointPos[0] << ", ";
+    std::cout << "y: " << m_data.at(i).pointPos[1] << ", ";
+    std::cout << "z: " << m_data.at(i).pointPos[2] << ")" << std::endl << std::endl;
   }
 }

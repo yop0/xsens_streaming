@@ -18,6 +18,7 @@ set(THREADS_PREFER_PTHREAD_FLAG ON)
 add_project_dependency(Threads REQUIRED)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/CMakeModules)
-add_project_dependency(mtsdk REQUIRED COMPONENTS xstypes)
+find_package(mtsdk REQUIRED COMPONENTS xstypes)
 
 add_subdirectory(src)
+add_subdirectory(CMakeModules)

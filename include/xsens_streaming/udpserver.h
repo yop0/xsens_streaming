@@ -24,53 +24,43 @@
   OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#include "timecodedatagram.h"
+#ifndef UDPSERVER_H
+#define UDPSERVER_H
 
-/*! \class TimeCodeDatagram
-  \brief a Time Code datagram (type 0x25)
+#include <atomic>
+#include <mutex>
+#include <streaming_protocol/parsermanager.h>
+#include <streaming_protocol/streamer.h>
+#include <thread>
+#include <xsens/xssocket.h>
+#include <xsens/xsthread.h>
 
-  Information about each segment is sent as follows.
+struct Datagram;
 
-  4 bytes String size (12 byte)
-  12-byte timecode string: HH:MM:SS.mmm
-
-  Total: 16 bytes per segment
-*/
-
-/*! Constructor */
-TimeCodeDatagram::TimeCodeDatagram() : Datagram()
+class UdpServer
 {
-  setType(SPTimeCode);
-}
+public:
+  UdpServer(XsString address = "localhost", uint16_t port = 9763);
+  ~UdpServer();
 
-/*! Destructor */
-TimeCodeDatagram::~TimeCodeDatagram() {}
+  void readMessages();
+  void startThread();
+  void stopThread();
 
-/*! Deserialize the data from \a arr
-  \sa serializeData
-*/
-void TimeCodeDatagram::deserializeData(Streamer & inputStreamer)
-{
-  Streamer * streamer = &inputStreamer;
+  const Datagram & datagram() const;
 
-  int32_t stringSize = 0;
-  streamer->read(stringSize);
+private:
+  std::unique_ptr<Datagram> m_datagram;
+  mutable std::mutex m_datagramMutex;
+  std::thread m_th;
 
-  std::string str;
-  streamer->read(str, 12);
-  int h, m, s, n;
+  std::unique_ptr<XsSocket> m_socket;
+  uint16_t m_port;
+  XsString m_hostName;
 
-  sscanf(str.c_str(), "%d:%d:%d.%d", &h, &m, &s, &n);
-  m_hour = h;
-  m_minute = m;
-  m_second = s;
-  m_nano = 1000000 * n;
-}
+  std::unique_ptr<ParserManager> m_parserManager;
 
-/*! Print Time Code datagram in a formatted way
- */
-void TimeCodeDatagram::printData() const
-{
-  printf("%d:%d:%d.%d", m_hour, m_minute, m_second, m_nano);
-  std::cout << std::endl;
-}
+  volatile std::atomic_bool m_started, m_stopping;
+};
+
+#endif

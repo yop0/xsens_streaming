@@ -24,7 +24,7 @@
   OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#include "trackerkinematicsdatagram.h"
+#include <xsens_streaming/trackerkinematicsdatagram.h>
 
 /*! \class TrackerKinematicsDatagram
   \brief Tracker kinematics datagram (type 0x23)

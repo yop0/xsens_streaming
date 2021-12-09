@@ -24,7 +24,7 @@
   OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#include "metadatagram.h"
+#include <xsens_streaming/metadatagram.h>
 
 /*! \class MetaDatagram
   Meta data (type 0x12)

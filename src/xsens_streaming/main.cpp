@@ -24,20 +24,36 @@
   OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#ifndef PARSERMANAGER_H
-#define PARSERMANAGER_H
+#include <boost/program_options.hpp>
+#include <xsens/xstime.h>
+#include <xsens_streaming/streamer.h>
+#include <xsens_streaming/udpserver.h>
+namespace po = boost::program_options;
 
-#include "datagram.h"
-
-class ParserManager
+int main(int argc, char * argv[])
 {
-public:
-  ParserManager();
-  ~ParserManager();
-  void readDatagram(const XsByteArray & data);
+  auto host = std::string{};
+  auto port = 0u;
+  po::options_description desc("xsens_streaming_sample options");
+  // clang-format off
+  desc.add_options()
+    ("help", "Produce this message")
+  	("host,h", po::value<std::string>(&host)->default_value("localhost"), "connection host")
+  	("port,p", po::value<unsigned int>(&port)->default_value(9763), "connection port");
+  // clang-format on
+  /* Parse command line arguments */
+  po::variables_map vm;
+  po::store(po::parse_command_line(argc, argv, desc), vm);
+  po::notify(vm);
+  if(vm.count("help"))
+  {
+    std::cout << desc << std::endl;
+    return 1;
+  }
 
-private:
-  Datagram * createDgram(StreamingProtocol proto);
-};
+  UdpServer udpServer(host, (uint16_t)port);
 
-#endif
+  while(true) XsTime::msleep(10);
+
+  return 0;
+}

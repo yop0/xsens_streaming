@@ -24,19 +24,19 @@
   OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#include "parsermanager.h"
+#include <xsens_streaming/parsermanager.h>
 
-#include "angularsegmentkinematicsdatagram.h"
-#include "centerofmassdatagram.h"
-#include "eulerdatagram.h"
-#include "jointanglesdatagram.h"
-#include "linearsegmentkinematicsdatagram.h"
-#include "metadatagram.h"
-#include "positiondatagram.h"
-#include "quaterniondatagram.h"
-#include "scaledatagram.h"
-#include "timecodedatagram.h"
-#include "trackerkinematicsdatagram.h"
+#include <xsens_streaming/angularsegmentkinematicsdatagram.h>
+#include <xsens_streaming/centerofmassdatagram.h>
+#include <xsens_streaming/eulerdatagram.h>
+#include <xsens_streaming/jointanglesdatagram.h>
+#include <xsens_streaming/linearsegmentkinematicsdatagram.h>
+#include <xsens_streaming/metadatagram.h>
+#include <xsens_streaming/positiondatagram.h>
+#include <xsens_streaming/quaterniondatagram.h>
+#include <xsens_streaming/scaledatagram.h>
+#include <xsens_streaming/timecodedatagram.h>
+#include <xsens_streaming/trackerkinematicsdatagram.h>
 
 ParserManager::ParserManager() {}
 
@@ -76,10 +76,10 @@ Datagram * ParserManager::createDgram(StreamingProtocol proto)
 }
 
 /*! Read single datagram from the incoming stream */
-void ParserManager::readDatagram(const XsByteArray & data)
+std::unique_ptr<Datagram> ParserManager::readDatagram(const XsByteArray & data)
 {
   StreamingProtocol type = static_cast<StreamingProtocol>(Datagram::messageType(data));
-  Datagram * datagram = createDgram(type);
+  auto datagram = std::unique_ptr<Datagram>(createDgram(type));
 
   if(datagram != nullptr)
   {
@@ -87,10 +87,12 @@ void ParserManager::readDatagram(const XsByteArray & data)
     // note that this can cause a lot of console spam
     datagram->printHeader();
     datagram->printData();
+    return datagram;
   }
   else
   {
     XsString str(data.size(), (const char *)data.data());
     std::cout << "Unhandled datagram: " << str.c_str() << std::endl;
+    return nullptr;
   }
 }

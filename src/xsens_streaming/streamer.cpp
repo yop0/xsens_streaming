@@ -24,7 +24,7 @@
   OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#include "streamer.h"
+#include <xsens_streaming/streamer.h>
 
 /*!
   Intel processors use "Little Endian" byte order:
