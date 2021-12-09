@@ -27,7 +27,7 @@
 #ifndef SCALEDATAGRAM_H
 #define SCALEDATAGRAM_H
 
-#include "datagram.h"
+#include <xsens_streaming/datagram.h>
 
 class ScaleDatagram : public Datagram
 {

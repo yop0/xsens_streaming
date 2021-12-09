@@ -27,7 +27,7 @@
 #ifndef JOINTANGLESDATAGRAM_H
 #define JOINTANGLESDATAGRAM_H
 
-#include "datagram.h"
+#include <xsens_streaming/datagram.h>
 
 class JointAnglesDatagram : public Datagram
 {

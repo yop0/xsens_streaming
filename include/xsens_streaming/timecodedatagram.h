@@ -27,7 +27,7 @@
 #ifndef TIMECODEDATAGRAM_H
 #define TIMECODEDATAGRAM_H
 
-#include "datagram.h"
+#include <xsens_streaming/datagram.h>
 
 class TimeCodeDatagram : public Datagram
 {

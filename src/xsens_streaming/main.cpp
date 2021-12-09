@@ -52,6 +52,7 @@ int main(int argc, char * argv[])
   }
 
   UdpServer udpServer(host, (uint16_t)port);
+  udpServer.printDatagrams(true);
 
   while(true) XsTime::msleep(10);
 

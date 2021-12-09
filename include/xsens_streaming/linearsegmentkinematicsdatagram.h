@@ -27,7 +27,7 @@
 #ifndef LINEARSEGMENTKINEMATICSDATAGRAM_H
 #define LINEARSEGMENTKINEMATICSDATAGRAM_H
 
-#include "datagram.h"
+#include <xsens_streaming/datagram.h>
 
 class LinearSegmentKinematicsDatagram : public Datagram
 {

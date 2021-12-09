@@ -76,7 +76,7 @@ Datagram * ParserManager::createDgram(StreamingProtocol proto)
 }
 
 /*! Read single datagram from the incoming stream */
-std::unique_ptr<Datagram> ParserManager::readDatagram(const XsByteArray & data)
+std::unique_ptr<Datagram> ParserManager::readDatagram(const XsByteArray & data, bool print)
 {
   StreamingProtocol type = static_cast<StreamingProtocol>(Datagram::messageType(data));
   auto datagram = std::unique_ptr<Datagram>(createDgram(type));
@@ -85,8 +85,11 @@ std::unique_ptr<Datagram> ParserManager::readDatagram(const XsByteArray & data)
   {
     datagram->deserialize(data);
     // note that this can cause a lot of console spam
-    datagram->printHeader();
-    datagram->printData();
+    if(print)
+    {
+      datagram->printHeader();
+      datagram->printData();
+    }
     return datagram;
   }
   else

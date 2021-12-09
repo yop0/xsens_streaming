@@ -29,11 +29,12 @@
 
 #include <atomic>
 #include <mutex>
-#include <streaming_protocol/parsermanager.h>
-#include <streaming_protocol/streamer.h>
 #include <thread>
 #include <xsens/xssocket.h>
 #include <xsens/xsthread.h>
+#include <xsens_streaming/parsermanager.h>
+#include <xsens_streaming/quaterniondatagram.h>
+#include <xsens_streaming/streamer.h>
 
 struct Datagram;
 
@@ -47,18 +48,29 @@ public:
   void startThread();
   void stopThread();
 
-  const Datagram & datagram() const;
+  std::vector<QuaternionDatagram::Kinematics> quaternions() const
+  {
+    std::lock_guard<std::mutex> lock(quaternionMutex_);
+    return quaternions_;
+  }
+
+  void printDatagrams(bool print)
+  {
+    printDatagrams_ = print;
+  }
 
 private:
-  std::unique_ptr<Datagram> m_datagram;
-  mutable std::mutex m_datagramMutex;
   std::thread m_th;
+
+  std::vector<QuaternionDatagram::Kinematics> quaternions_;
+  mutable std::mutex quaternionMutex_;
 
   std::unique_ptr<XsSocket> m_socket;
   uint16_t m_port;
   XsString m_hostName;
 
   std::unique_ptr<ParserManager> m_parserManager;
+  bool printDatagrams_ = false;
 
   volatile std::atomic_bool m_started, m_stopping;
 };

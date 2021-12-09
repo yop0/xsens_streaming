@@ -27,14 +27,14 @@
 #ifndef PARSERMANAGER_H
 #define PARSERMANAGER_H
 
-#include "datagram.h"
+#include <xsens_streaming/datagram.h>
 
 class ParserManager
 {
 public:
   ParserManager();
   ~ParserManager();
-  std::unique_ptr<Datagram> readDatagram(const XsByteArray & data);
+  std::unique_ptr<Datagram> readDatagram(const XsByteArray & data, bool print = false);
 
 private:
   Datagram * createDgram(StreamingProtocol proto);

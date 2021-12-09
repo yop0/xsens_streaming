@@ -27,7 +27,7 @@
 #ifndef CENTEROFMASSDATAGRAM_H
 #define CENTEROFMASSDATAGRAM_H
 
-#include "datagram.h"
+#include <xsens_streaming/datagram.h>
 
 class CenterOfMassDatagram : public Datagram
 {

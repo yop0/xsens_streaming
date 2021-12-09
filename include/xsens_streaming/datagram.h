@@ -33,7 +33,7 @@
 #include <sstream>
 #include <vector>
 
-#include "streamer.h"
+#include <xsens_streaming/streamer.h>
 
 enum StreamingProtocol
 {

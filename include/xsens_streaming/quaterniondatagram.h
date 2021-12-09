@@ -27,19 +27,11 @@
 #ifndef QUATERNIONDATAGRAM_H
 #define QUATERNIONDATAGRAM_H
 
-#include "datagram.h"
+#include <xsens_streaming/datagram.h>
 
 class QuaternionDatagram : public Datagram
 {
 public:
-  QuaternionDatagram();
-  virtual ~QuaternionDatagram();
-  virtual void printData() const override;
-
-protected:
-  virtual void deserializeData(Streamer & inputStreamer) override;
-
-private:
   struct Kinematics
   {
     int segmentId;
@@ -47,6 +39,17 @@ private:
     float orientation[4]; // orientation (quaternion) relative to global space
   };
 
+public:
+  QuaternionDatagram();
+  virtual ~QuaternionDatagram();
+  virtual void printData() const override;
+  inline const std::vector<Kinematics> & data() const
+  {
+    return m_data;
+  }
+
+protected:
+  virtual void deserializeData(Streamer & inputStreamer) override;
   std::vector<Kinematics> m_data;
 };
 

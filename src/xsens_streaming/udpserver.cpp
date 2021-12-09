@@ -24,6 +24,7 @@
   OTHER DEALINGS IN THE SOFTWARE.
 */
 
+#include <xsens_streaming/quaterniondatagram.h>
 #include <xsens_streaming/udpserver.h>
 
 UdpServer::UdpServer(XsString address, uint16_t port) : m_started(false), m_stopping(false)
@@ -61,9 +62,13 @@ void UdpServer::readMessages()
     int rv = m_socket->read(buffer);
     if(buffer.size() > 0)
     {
-      auto datagram = m_parserManager->readDatagram(buffer);
-      std::lock_guard<std::mutex> lock(m_datagramMutex);
-      m_datagram = std::move(datagram);
+      auto datagram = m_parserManager->readDatagram(buffer, printDatagrams_);
+      if(datagram->messageType() == StreamingProtocol::SPPoseQuaternion)
+      {
+        auto & quaternionDatagram = dynamic_cast<QuaternionDatagram &>(*datagram);
+        std::lock_guard<std::mutex> lock(quaternionMutex_);
+        quaternions_ = quaternionDatagram.data();
+      }
     }
 
     buffer.clear();
@@ -74,12 +79,6 @@ void UdpServer::readMessages()
 
   m_stopping = false;
   m_started = false;
-}
-
-const Datagram & UdpServer::datagram() const
-{
-  std::lock_guard<std::mutex> lock(m_datagramMutex);
-  return *m_datagram;
 }
 
 void UdpServer::startThread()

@@ -27,7 +27,7 @@
 #ifndef EULERDATAGRAM_H
 #  define EULERATAGRAM_H
 
-#  include "datagram.h"
+#  include <xsens_streaming/datagram.h>
 
 class EulerDatagram : public Datagram
 {

@@ -27,7 +27,7 @@
 #ifndef TRACKERSKINEMATICSDATAGRAM_H
 #define TRACKERSKINEMATICSDATAGRAM_H
 
-#include "datagram.h"
+#include <xsens_streaming/datagram.h>
 
 class TrackerKinematicsDatagram : public Datagram
 {

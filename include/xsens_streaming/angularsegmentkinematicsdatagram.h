@@ -27,7 +27,7 @@
 #ifndef ANGULARSEGMENTSKINEMATICSDATAGRAM_H
 #define ANGULARSEGMENTSKINEMATICSDATAGRAM_H
 
-#include "datagram.h"
+#include <xsens_streaming/datagram.h>
 
 class AngularSegmentKinematicsDatagram : public Datagram
 {

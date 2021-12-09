@@ -27,7 +27,7 @@
 #ifndef POSITIONDATAGRAM_H
 #define POSITIONDATAGRAM_H
 
-#include "datagram.h"
+#include <xsens_streaming/datagram.h>
 
 class PositionDatagram : public Datagram
 {

@@ -27,7 +27,7 @@
 #ifndef METADATAGRAM_H
 #define METADATAGRAM_H
 
-#include "datagram.h"
+#include <xsens_streaming/datagram.h>
 
 class MetaDatagram : public Datagram
 {
