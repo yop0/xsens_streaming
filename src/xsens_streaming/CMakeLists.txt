@@ -34,15 +34,16 @@ ${CMAKE_SOURCE_DIR}/include/xsens_streaming/trackerkinematicsdatagram.h
 ${CMAKE_SOURCE_DIR}/include/xsens_streaming/udpserver.h
 )
 
-add_library(streaming_protocol SHARED ${STREAMING_PROTOCOL_SRC} ${STREAMING_PROTOCOL_HEADERS})
-target_include_directories(streaming_protocol PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include> $<INSTALL_INTERFACE:include>)
-target_link_libraries(streaming_protocol PUBLIC
+add_library(xsens_streaming SHARED ${STREAMING_PROTOCOL_SRC} ${STREAMING_PROTOCOL_HEADERS})
+target_include_directories(xsens_streaming PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include> $<INSTALL_INTERFACE:include>)
+target_link_libraries(xsens_streaming PUBLIC
     mtsdk::mtsdk # only xstypes needed
 )
-target_link_libraries(streaming_protocol PRIVATE Threads::Threads)
+target_link_libraries(xsens_streaming PRIVATE Threads::Threads)
+set_target_properties(xsens_streaming PROPERTIES INSTALL_RPATH "${MTSDK_LIBRARY_DIR}")
 
 
-install(TARGETS streaming_protocol
+install(TARGETS xsens_streaming
     EXPORT ${TARGETS_EXPORT_NAME}
     LIBRARY DESTINATION lib
     ARCHIVE DESTINATION lib)
@@ -54,7 +55,7 @@ install(DIRECTORY ${CMAKE_SOURCE_DIR}/include/xsens_streaming
 )
 
 add_executable(xsens_streaming_sample main.cpp)
-target_link_libraries(xsens_streaming_sample streaming_protocol)
+target_link_libraries(xsens_streaming_sample xsens_streaming)
 target_link_libraries(xsens_streaming_sample Boost::program_options)
 set_target_properties(xsens_streaming_sample PROPERTIES INSTALL_RPATH "${MTSDK_LIBRARY_DIR}") # "/usr/local/xsens/lib64")
 
