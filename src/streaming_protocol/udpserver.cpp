@@ -26,13 +26,6 @@
 
 #include "udpserver.h"
 
-uint32_t udpThreadFunc(void * param)
-{
-	UdpServer* server = (UdpServer*) param;
-	server->readMessages();
-	return 0;
-}
-
 UdpServer::UdpServer(XsString address, uint16_t port)
 	: m_started(false)
 	, m_stopping(false)
@@ -86,8 +79,10 @@ void UdpServer::startThread()
 
 	m_started = true;
 	m_stopping = false;
-	typedef void * (*ftype)(void *);
-	xsStartThread((ftype)&udpThreadFunc, this, 0);
+	m_th = std::thread([this]()
+	{
+		this->readMessages();
+	});
 }
 
 void UdpServer::stopThread()
@@ -95,6 +90,5 @@ void UdpServer::stopThread()
 	if (!m_started)
 		return;
 	m_stopping = true;
-	while (m_started)
-		XsTime::msleep(10);
+	m_th.join();
 }

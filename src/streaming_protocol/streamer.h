@@ -31,7 +31,7 @@
 #include <iostream>
 #include <sstream>
 
-#include <xstypes/xsbytearray.h>
+#include <xsens/xsbytearray.h>
 
 class Streamer
 {

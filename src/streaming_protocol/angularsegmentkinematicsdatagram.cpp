@@ -25,7 +25,7 @@
 */
 
 #include "angularsegmentkinematicsdatagram.h"
-#include <xstypes/xsmath.h>
+#include <xsens/xsmath.h>
 
 /*! \class AngularSegmentKinematicsDatagram
 	\brief a Angular Kinematics datagram (type 0x22)

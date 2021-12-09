@@ -25,8 +25,8 @@
 */
 
 #include "eulerdatagram.h"
-#include <xstypes/xsquaternion.h>
-#include <xstypes/xseuler.h>
+#include <xsens/xsquaternion.h>
+#include <xsens/xseuler.h>
 
 /*! \class EulerDatagram
 	\brief a Position & Euler orientation pose datagram (type 01)

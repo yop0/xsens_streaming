@@ -25,7 +25,7 @@
 */
 
 #include "datagram.h"
-#include <xstypes/xstimestamp.h>
+#include <xsens/xstimestamp.h>
 
 /*! \class Datagram
 

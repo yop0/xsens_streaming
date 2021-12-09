@@ -29,9 +29,10 @@
 
 #include "streamer.h"
 #include "parsermanager.h"
-#include <xstypes/xssocket.h>
-#include <xstypes/xsthread.h>
+#include <xsens/xssocket.h>
+#include <xsens/xsthread.h>
 #include <atomic>
+#include <thread>
 
 class UdpServer
 {
@@ -44,6 +45,7 @@ public:
 	void stopThread();
 
 private:
+	std::thread m_th;
 	std::unique_ptr<XsSocket> m_socket;
 	uint16_t m_port;
 	XsString m_hostName;

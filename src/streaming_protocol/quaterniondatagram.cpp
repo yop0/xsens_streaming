@@ -25,7 +25,7 @@
 */
 
 #include "quaterniondatagram.h"
-#include <xstypes/xsmath.h>
+#include <xsens/xsmath.h>
 
 /*! \class QuaternionDatagram
   \brief a Position & Quaternion orientation pose datagram (type 02)
@@ -33,13 +33,13 @@
   Information about each segment is sent as follows.
 
   4 bytes segment ID, in the range 1-30
-  4 bytes x–coordinate of sensor position
-  4 bytes y–coordinate of sensor position
-  4 bytes z–coordinate of sensor position
-  4 bytes q1 rotation – sensor rotation quaternion component 1 (re)
-  4 bytes q2 rotation – sensor rotation quaternion component 1 (i)
-  4 bytes q3 rotation – sensor rotation quaternion component 1 (j)
-  4 bytes q4 rotation – sensor rotation quaternion component 1 (k)
+  4 bytes xï¿½coordinate of sensor position
+  4 bytes yï¿½coordinate of sensor position
+  4 bytes zï¿½coordinate of sensor position
+  4 bytes q1 rotation ï¿½ sensor rotation quaternion component 1 (re)
+  4 bytes q2 rotation ï¿½ sensor rotation quaternion component 1 (i)
+  4 bytes q3 rotation ï¿½ sensor rotation quaternion component 1 (j)
+  4 bytes q4 rotation ï¿½ sensor rotation quaternion component 1 (k)
 
   Total: 32 bytes per segment
 

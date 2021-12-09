@@ -26,7 +26,7 @@
 
 #include "udpserver.h"
 #include "streamer.h"
-#include <xstypes/xstime.h>
+#include <xsens/xstime.h>
 
 int main(int argc, char *argv[])
 {

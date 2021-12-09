@@ -5,7 +5,6 @@ datagram.cpp
 eulerdatagram.cpp
 jointanglesdatagram.cpp
 linearsegmentkinematicsdatagram.cpp
-main.cpp
 metadatagram.cpp
 parsermanager.cpp
 positiondatagram.cpp
@@ -35,10 +34,20 @@ trackerkinematicsdatagram.h
 udpserver.h
 )
 
-add_executable(streaming_protocol ${STREAMING_PROTOCOL_SRC} ${STREAMING_PROTOCOL_HEADERS})
-target_include_directories(streaming_protocol PUBLIC ${PROJECT_SOURCE_DIR}/include)
-target_link_directories(streaming_protocol PUBLIC ${PROJECT_SOURCE_DIR}/lib)
+add_library(streaming_protocol SHARED ${STREAMING_PROTOCOL_SRC} ${STREAMING_PROTOCOL_HEADERS})
 target_link_libraries(streaming_protocol PUBLIC
-    xstypes
-    pthread
+    mtsdk::mtsdk # only xstypes needed
 )
+target_link_libraries(streaming_protocol PRIVATE Threads::Threads)
+
+
+install(TARGETS streaming_protocol
+    EXPORT ${TARGETS_EXPORT_NAME}
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib)
+
+add_executable(xsens_streaming_sample main.cpp)
+target_link_libraries(xsens_streaming_sample streaming_protocol)
+set_target_properties(xsens_streaming_sample PROPERTIES INSTALL_RPATH "${MTSDK_LIBRARY_DIR}") # "/usr/local/xsens/lib64")
+
+install(TARGETS xsens_streaming_sample)

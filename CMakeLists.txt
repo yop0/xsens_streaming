@@ -1,6 +1,21 @@
 cmake_minimum_required(VERSION 3.1)
+set(PROJECT_NAME xsens_streaming)
+set(PROJECT_DESCRIPTION xsens_streaming)
+set(PROJECT_VERSION 0.1.0)
+set(PROJECT_URL https://github.com/arntanguy/xsens_streaming)
+set(PROJECT_DEBUG_POSTFIX "_d")
+set(PROJECT_USE_CMAKE_EXPORT TRUE)
+set(CXX_DISABLE_WERROR 1)
 set(CMAKE_CXX_STANDARD 11)
 
-project(xsens_streaming LANGUAGES C CXX VERSION 0.1.0)
+include(cmake/base.cmake)
+
+project(${PROJECT_NAME} LANGUAGES C CXX)
+
+set(THREADS_PREFER_PTHREAD_FLAG ON)
+add_project_dependency(Threads REQUIRED)
+
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/CMakeModules)
+add_project_dependency(mtsdk REQUIRED COMPONENTS xstypes)
 
 add_subdirectory(src)
