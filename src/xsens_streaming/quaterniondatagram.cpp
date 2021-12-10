@@ -33,13 +33,13 @@
   Information about each segment is sent as follows.
 
   4 bytes segment ID, in the range 1-30
-  4 bytes x�coordinate of sensor position
-  4 bytes y�coordinate of sensor position
-  4 bytes z�coordinate of sensor position
-  4 bytes q1 rotation � sensor rotation quaternion component 1 (re)
-  4 bytes q2 rotation � sensor rotation quaternion component 1 (i)
-  4 bytes q3 rotation � sensor rotation quaternion component 1 (j)
-  4 bytes q4 rotation � sensor rotation quaternion component 1 (k)
+  4 bytes x-coordinate of sensor position
+  4 bytes y-coordinate of sensor position
+  4 bytes z-coordinate of sensor position
+  4 bytes q1 rotation - sensor rotation quaternion component 1 (re)
+  4 bytes q2 rotation - sensor rotation quaternion component 1 (i)
+  4 bytes q3 rotation - sensor rotation quaternion component 1 (j)
+  4 bytes q4 rotation - sensor rotation quaternion component 1 (k)
 
   Total: 32 bytes per segment
 
@@ -75,9 +75,6 @@ void QuaternionDatagram::deserializeData(Streamer & inputStreamer)
 
     // Store the Quaternion Rotation in a vector -> 16 byte	(4 x 4 byte)
     for(int k = 0; k < 4; k++) streamer->read(kin.orientation[k]);
-
-    // trasform in degrees
-    for(int k = 0; k < 4; k++) kin.orientation[k] = XsMath_rad2deg(kin.orientation[k]);
 
     m_data.push_back(kin);
   }
