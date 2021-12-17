@@ -8,7 +8,7 @@ This package provides an API to read XSens tracking and sensor data provided by 
 - Build and install this package:
 
 ```sh
-git clone git@github.com:arntanguy/xsens_streaming
+git clone --recurse-submodules git@github.com:arntanguy/xsens_streaming
 cd xsens_streaming
 mkdir build && cd build
 cmake ..
