@@ -49,6 +49,37 @@ private:
   };
 
   std::vector<Joint> m_data;
+
+  const std::vector<std::string> joint_names = {
+    "jL5S1", 
+    "jL4L3", 
+    "jL1T12",
+    "jT9T8", 
+    "jT1C7",
+    "jC1Head", 
+    "jT4RightShoulder",
+    "jRightShoulder",
+    "jRightElbow",
+    "jRightWrist",
+    "jT4LeftShoulder",
+    "jLeftShoulder",
+    "jLeftElbow",
+    "jLeftWrist",
+    "jRightHip",
+    "jRightKnee",
+    "jRightAnkle",
+    "jRightBallFoot",
+    "jLeftHip",
+    "jLeftKnee",
+    "jLeftAnkle",
+    "jLeftBallFoot",
+    "T8_Head", 
+    "T8_LeftUpperArm",
+    "T8_RightUpperArm", 
+    "Pelvis_T8",
+    "Vertical_Pelvis",
+    "Vertical_T8",
+  };
 };
 
 #endif
