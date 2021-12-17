@@ -31,22 +31,28 @@
 
 class JointAnglesDatagram : public Datagram
 {
-
-public:
-  JointAnglesDatagram();
-  virtual ~JointAnglesDatagram();
-  virtual void printData() const override;
-
-protected:
-  virtual void deserializeData(Streamer & inputStreamer) override;
-
-private:
+public: 
   struct Joint
   {
     int32_t parent;
     int32_t child;
     float rotation[3];
   };
+
+public:
+  JointAnglesDatagram();
+  virtual ~JointAnglesDatagram();
+  virtual void printData() const override;
+
+  inline const std::vector<Joint> & data() const
+  {
+    return m_data;
+  }
+
+protected:
+  virtual void deserializeData(Streamer & inputStreamer) override;
+
+private:
 
   std::vector<Joint> m_data;
 

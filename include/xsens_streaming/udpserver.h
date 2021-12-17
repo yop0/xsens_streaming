@@ -34,6 +34,7 @@
 #include <xsens/xsthread.h>
 #include <xsens_streaming/parsermanager.h>
 #include <xsens_streaming/quaterniondatagram.h>
+#include <xsens_streaming/jointanglesdatagram.h>
 #include <xsens_streaming/streamer.h>
 
 struct Datagram;
@@ -64,6 +65,9 @@ private:
 
   std::vector<QuaternionDatagram::Kinematics> quaternions_;
   mutable std::mutex quaternionMutex_;
+
+  std::vector<JointAnglesDatagram::Joint> jointAngles_;
+  mutable std::mutex jointAnglesMutex_; 
 
   std::unique_ptr<XsSocket> m_socket;
   uint16_t m_port;

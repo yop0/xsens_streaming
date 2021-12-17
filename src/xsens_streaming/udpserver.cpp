@@ -25,6 +25,7 @@
 */
 
 #include <xsens_streaming/quaterniondatagram.h>
+#include <xsens_streaming/jointanglesdatagram.h>
 #include <xsens_streaming/udpserver.h>
 
 UdpServer::UdpServer(XsString address, uint16_t port) : m_started(false), m_stopping(false)
@@ -68,6 +69,12 @@ void UdpServer::readMessages()
         auto & quaternionDatagram = dynamic_cast<QuaternionDatagram &>(*datagram);
         std::lock_guard<std::mutex> lock(quaternionMutex_);
         quaternions_ = quaternionDatagram.data();
+      } 
+      else if(datagram->messageType() == StreamingProtocol::SPJointAngles)
+      {
+        auto & jointAnglesDatagram = dynamic_cast<JointAnglesDatagram &>(*datagram); 
+        std::lock_guard<std::mutex> lock(jointAnglesMutex_); 
+        jointAngles_ = jointAnglesDatagram.data(); 
       }
     }
 
