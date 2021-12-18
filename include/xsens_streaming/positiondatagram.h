@@ -32,20 +32,25 @@
 class PositionDatagram : public Datagram
 {
 public:
-  PositionDatagram();
-  virtual ~PositionDatagram();
-  virtual void printData() const override;
-
-protected:
-  virtual void deserializeData(Streamer & inputStreamer) override;
-
-private:
   struct VirtualMarkerSet
   {
     int segmentId;
     float pointPos[3];
   };
 
+public:
+  PositionDatagram();
+  virtual ~PositionDatagram();
+  virtual void printData() const override;
+  inline const std::vector<VirtualMarkerSet> & data() const
+  {
+    return m_data;
+  }
+
+protected:
+  virtual void deserializeData(Streamer & inputStreamer) override;
+
+private:
   std::vector<VirtualMarkerSet> m_data;
 };
 

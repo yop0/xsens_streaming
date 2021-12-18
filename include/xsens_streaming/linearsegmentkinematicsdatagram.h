@@ -32,14 +32,6 @@
 class LinearSegmentKinematicsDatagram : public Datagram
 {
 public:
-  LinearSegmentKinematicsDatagram();
-  virtual ~LinearSegmentKinematicsDatagram();
-  virtual void printData() const override;
-
-protected:
-  virtual void deserializeData(Streamer & inputStreamer) override;
-
-private:
   struct Kinematics
   {
     int segmentId;
@@ -48,6 +40,20 @@ private:
     float acceleration[3];
   };
 
+public:
+  LinearSegmentKinematicsDatagram();
+  virtual ~LinearSegmentKinematicsDatagram();
+  virtual void printData() const override;
+  inline const std::vector<Kinematics> & data() const
+  {
+    return m_data;
+  }
+
+
+protected:
+  virtual void deserializeData(Streamer & inputStreamer) override;
+
+private:
   std::vector<Kinematics> m_data;
 };
 

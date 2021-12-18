@@ -24,8 +24,6 @@
   OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#include <xsens_streaming/quaterniondatagram.h>
-#include <xsens_streaming/jointanglesdatagram.h>
 #include <xsens_streaming/udpserver.h>
 
 UdpServer::UdpServer(XsString address, uint16_t port) : m_started(false), m_stopping(false)
@@ -76,6 +74,45 @@ void UdpServer::readMessages()
         std::lock_guard<std::mutex> lock(jointAnglesMutex_); 
         jointAngles_ = jointAnglesDatagram.data(); 
       }
+      else if(datagram->messageType() == StreamingProtocol::SPPoseEuler)
+      {
+        auto & eulerDatagram = dynamic_cast<EulerDatagram &>(*datagram); 
+        std::lock_guard<std::mutex> lock(eulerMutex_); 
+        euler_ = eulerDatagram.data(); 
+      }
+      else if(datagram->messageType() == StreamingProtocol::SPPosePositions) 
+      {
+        auto & positionDatagram = dynamic_cast<PositionDatagram &>(*datagram); 
+        std::lock_guard<std::mutex> lock(virtualMarkerPositionMutex_); 
+        virtualMarkerPositions_ = positionDatagram.data(); 
+      }
+      else if(datagram->messageType() == StreamingProtocol::SPLinearSegmentKinematics) 
+      {
+        auto & linearSegmentKinematicsDatagram = dynamic_cast<LinearSegmentKinematicsDatagram &>(*datagram); 
+        std::lock_guard<std::mutex> lock(linearSegmentKinematicsMutex_); 
+        linearSegmentKinematics_ = linearSegmentKinematicsDatagram.data(); 
+      }
+      else if(datagram->messageType() == StreamingProtocol::SPAngularSegmentKinematics)
+      {
+        auto & angularSegmentKinematicsDatagram = dynamic_cast<AngularSegmentKinematicsDatagram &>(*datagram); 
+        std::lock_guard<std::mutex> lock(angularSegmentKinematicsMutex_); 
+        angularSegmentKinematics_ = angularSegmentKinematicsDatagram.data(); 
+      }
+      else if(datagram->messageType() == StreamingProtocol::SPTrackerKinematics)
+      {
+        auto & trackerKinematicsDatagram = dynamic_cast<TrackerKinematicsDatagram &>(*datagram); 
+        std::lock_guard<std::mutex> lock(trackerDataMutex_); 
+        trackerData_ = trackerKinematicsDatagram.data(); 
+      }
+      else if(datagram->messageType() == StreamingProtocol::SPMetaScaling)
+      {
+        auto & scaleDatagram = dynamic_cast<ScaleDatagram &>(*datagram); 
+        std::lock_guard<std::mutex> lock1(pointDefinitionMutex_); 
+        pointDefinition_ = scaleDatagram.pointDefinition(); 
+        std::lock_guard<std::mutex> lock2(nullPoseDefinitionMutex_); 
+        nullPoseDefinition_ = scaleDatagram.nullPoseDefinition(); 
+      }
+
     }
 
     buffer.clear();
