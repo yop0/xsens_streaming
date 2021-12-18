@@ -51,3 +51,6 @@ cdef class UdpServer(object):
     def timeCode(self):
         return self.impl.timeCode()
 
+    def comData(self):
+        return self.impl.comData()
+

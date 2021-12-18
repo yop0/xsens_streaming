@@ -128,6 +128,12 @@ void UdpServer::readMessages()
           std::lock_guard<std::mutex> lock(timeCodeMutex_); 
           timeCode_ = timeCodeDatagram.data(); 
         }
+        case StreamingProtocol::SPCenterOfMass:
+        {
+          auto & centerOfMassDatagram = dynamic_cast<CenterOfMassDatagram &>(*datagram); 
+          std::lock_guard<std::mutex> lock(comDataMutex_); 
+          comData_ = centerOfMassDatagram.data(); 
+        }
       }
     }
 

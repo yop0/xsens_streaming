@@ -57,13 +57,13 @@ void CenterOfMassDatagram::deserializeData(Streamer & inputStreamer)
   Streamer * streamer = &inputStreamer;
 
   // extract the coordinates of the position
-  for(int k = 0; k < 3; k++) streamer->read(m_pos[k]);
+  for(int k = 0; k < 3; k++) streamer->read(m_data.pos[k]);
 
   // extract the coordinates of the velocity
-  for(int k = 0; k < 3; k++) streamer->read(m_vel[k]);
+  for(int k = 0; k < 3; k++) streamer->read(m_data.vel[k]);
 
   // extract the coordinates of the acc
-  for(int k = 0; k < 3; k++) streamer->read(m_acc[k]);
+  for(int k = 0; k < 3; k++) streamer->read(m_data.acc[k]);
 }
 
 /*! Print Data datagram in a formatted way
@@ -72,19 +72,19 @@ void CenterOfMassDatagram::printData() const
 {
   std::cout << "Center of Mass Position: "
             << "(";
-  std::cout << "x: " << m_pos[0] << ", ";
-  std::cout << "y: " << m_pos[1] << ", ";
-  std::cout << "z: " << m_pos[2] << ")" << std::endl << std::endl;
+  std::cout << "x: " << m_data.pos[0] << ", ";
+  std::cout << "y: " << m_data.pos[1] << ", ";
+  std::cout << "z: " << m_data.pos[2] << ")" << std::endl << std::endl;
 
   std::cout << "Center of Mass Velocity: "
             << "(";
-  std::cout << "x: " << m_vel[0] << ", ";
-  std::cout << "y: " << m_vel[1] << ", ";
-  std::cout << "z: " << m_vel[2] << ")" << std::endl << std::endl;
+  std::cout << "x: " << m_data.vel[0] << ", ";
+  std::cout << "y: " << m_data.vel[1] << ", ";
+  std::cout << "z: " << m_data.vel[2] << ")" << std::endl << std::endl;
 
   std::cout << "Center of Mass Acceleration: "
             << "(";
-  std::cout << "x: " << m_acc[0] << ", ";
-  std::cout << "y: " << m_acc[1] << ", ";
-  std::cout << "z: " << m_acc[2] << ")" << std::endl << std::endl;
+  std::cout << "x: " << m_data.acc[0] << ", ";
+  std::cout << "y: " << m_data.acc[1] << ", ";
+  std::cout << "z: " << m_data.acc[2] << ")" << std::endl << std::endl;
 }

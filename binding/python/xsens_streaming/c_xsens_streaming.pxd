@@ -69,6 +69,13 @@ cdef extern from "<xsens_streaming/timecodedatagram.h>" namespace "TimeCodeDatag
         signed char minute
         signed char second
 
+cdef extern from "<xsens_streaming/centerofmassdatagram.h>": 
+    cdef struct CoMKinematics "CenterOfMassDatagram::Kinematics":
+        float pos[3]
+        float vel[3]
+        float acc[3]
+
+
 cdef extern from "<xsens_streaming/udpserver.h>":
     cdef cppclass UdpServer:
         UdpServer(const string&, unsigned int port)
@@ -91,5 +98,6 @@ cdef extern from "<xsens_streaming/udpserver.h>":
         vector[NullPoseDefinition] nullPoseDefinition()
         vector[TrackerKinematics] trackerData()
         TimeCode timeCode()
+        CoMKinematics comData()
 
         

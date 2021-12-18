@@ -43,6 +43,7 @@
 #include <xsens_streaming/scaledatagram.h>
 #include <xsens_streaming/trackerkinematicsdatagram.h>
 #include <xsens_streaming/timecodedatagram.h>
+#include <xsens_streaming/centerofmassdatagram.h>
 
 struct Datagram;
 
@@ -122,6 +123,12 @@ public:
     return timeCode_;
   }
 
+  CenterOfMassDatagram::Kinematics comData() const
+  {
+    std::lock_guard<std::mutex> lock(comDataMutex_);
+    return comData_;
+  }
+
   void printDatagrams(bool print)
   {
     printDatagrams_ = print;
@@ -159,6 +166,9 @@ private:
 
   TimeCodeDatagram::TimeCode timeCode_;
   mutable std::mutex timeCodeMutex_;
+
+  CenterOfMassDatagram::Kinematics comData_;
+  mutable std::mutex comDataMutex_;
 
   std::unique_ptr<XsSocket> m_socket;
   uint16_t m_port;
