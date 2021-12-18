@@ -62,63 +62,73 @@ void UdpServer::readMessages()
     if(buffer.size() > 0)
     {
       auto datagram = m_parserManager->readDatagram(buffer, printDatagrams_);
-      if(datagram->messageType() == StreamingProtocol::SPPoseQuaternion)
+      switch(datagram->messageType())
       {
-        auto & quaternionDatagram = dynamic_cast<QuaternionDatagram &>(*datagram);
-        std::lock_guard<std::mutex> lock(quaternionMutex_);
-        quaternions_ = quaternionDatagram.data();
-      } 
-      else if(datagram->messageType() == StreamingProtocol::SPJointAngles)
-      {
-        auto & jointAnglesDatagram = dynamic_cast<JointAnglesDatagram &>(*datagram); 
-        std::lock_guard<std::mutex> lock(jointAnglesMutex_); 
-        jointAngles_ = jointAnglesDatagram.data(); 
+        case StreamingProtocol::SPPoseQuaternion: 
+        {
+          auto & quaternionDatagram = dynamic_cast<QuaternionDatagram &>(*datagram);
+          std::lock_guard<std::mutex> lock(quaternionMutex_);
+          quaternions_ = quaternionDatagram.data();
+          break;
+        }
+        case StreamingProtocol::SPJointAngles:
+        {
+          auto & jointAnglesDatagram = dynamic_cast<JointAnglesDatagram &>(*datagram); 
+          std::lock_guard<std::mutex> lock(jointAnglesMutex_); 
+          jointAngles_ = jointAnglesDatagram.data();         
+          break;
+        }
+        case StreamingProtocol::SPPoseEuler:
+        {
+          auto & eulerDatagram = dynamic_cast<EulerDatagram &>(*datagram); 
+          std::lock_guard<std::mutex> lock(eulerMutex_); 
+          euler_ = eulerDatagram.data();         
+          break;
+        }
+        case StreamingProtocol::SPPosePositions:
+        {
+          auto & positionDatagram = dynamic_cast<PositionDatagram &>(*datagram); 
+          std::lock_guard<std::mutex> lock(virtualMarkerPositionMutex_); 
+          virtualMarkerPositions_ = positionDatagram.data();         
+          break;
+        }
+        case StreamingProtocol::SPLinearSegmentKinematics:
+        {
+          auto & linearSegmentKinematicsDatagram = dynamic_cast<LinearSegmentKinematicsDatagram &>(*datagram); 
+          std::lock_guard<std::mutex> lock(linearSegmentKinematicsMutex_); 
+          linearSegmentKinematics_ = linearSegmentKinematicsDatagram.data();         
+          break;
+        }
+        case StreamingProtocol::SPAngularSegmentKinematics:
+        {
+          auto & angularSegmentKinematicsDatagram = dynamic_cast<AngularSegmentKinematicsDatagram &>(*datagram); 
+          std::lock_guard<std::mutex> lock(angularSegmentKinematicsMutex_); 
+          angularSegmentKinematics_ = angularSegmentKinematicsDatagram.data();         
+          break;
+        }
+        case StreamingProtocol::SPTrackerKinematics:
+        {
+          auto & trackerKinematicsDatagram = dynamic_cast<TrackerKinematicsDatagram &>(*datagram); 
+          std::lock_guard<std::mutex> lock(trackerDataMutex_); 
+          trackerData_ = trackerKinematicsDatagram.data();       
+          break;
+        }
+        case StreamingProtocol::SPMetaScaling: 
+        {
+          auto & scaleDatagram = dynamic_cast<ScaleDatagram &>(*datagram); 
+          std::lock_guard<std::mutex> lock1(pointDefinitionMutex_); 
+          pointDefinition_ = scaleDatagram.pointDefinition(); 
+          std::lock_guard<std::mutex> lock2(nullPoseDefinitionMutex_); 
+          nullPoseDefinition_ = scaleDatagram.nullPoseDefinition(); 
+          break;
+        }
+        case StreamingProtocol::SPTimeCode:
+        {
+          auto & timeCodeDatagram = dynamic_cast<TimeCodeDatagram &>(*datagram); 
+          std::lock_guard<std::mutex> lock(timeCodeMutex_); 
+          timeCode_ = timeCodeDatagram.data(); 
+        }
       }
-      else if(datagram->messageType() == StreamingProtocol::SPPoseEuler)
-      {
-        auto & eulerDatagram = dynamic_cast<EulerDatagram &>(*datagram); 
-        std::lock_guard<std::mutex> lock(eulerMutex_); 
-        euler_ = eulerDatagram.data(); 
-      }
-      else if(datagram->messageType() == StreamingProtocol::SPPosePositions) 
-      {
-        auto & positionDatagram = dynamic_cast<PositionDatagram &>(*datagram); 
-        std::lock_guard<std::mutex> lock(virtualMarkerPositionMutex_); 
-        virtualMarkerPositions_ = positionDatagram.data(); 
-      }
-      else if(datagram->messageType() == StreamingProtocol::SPLinearSegmentKinematics) 
-      {
-        auto & linearSegmentKinematicsDatagram = dynamic_cast<LinearSegmentKinematicsDatagram &>(*datagram); 
-        std::lock_guard<std::mutex> lock(linearSegmentKinematicsMutex_); 
-        linearSegmentKinematics_ = linearSegmentKinematicsDatagram.data(); 
-      }
-      else if(datagram->messageType() == StreamingProtocol::SPAngularSegmentKinematics)
-      {
-        auto & angularSegmentKinematicsDatagram = dynamic_cast<AngularSegmentKinematicsDatagram &>(*datagram); 
-        std::lock_guard<std::mutex> lock(angularSegmentKinematicsMutex_); 
-        angularSegmentKinematics_ = angularSegmentKinematicsDatagram.data(); 
-      }
-      else if(datagram->messageType() == StreamingProtocol::SPTrackerKinematics)
-      {
-        auto & trackerKinematicsDatagram = dynamic_cast<TrackerKinematicsDatagram &>(*datagram); 
-        std::lock_guard<std::mutex> lock(trackerDataMutex_); 
-        trackerData_ = trackerKinematicsDatagram.data(); 
-      }
-      else if(datagram->messageType() == StreamingProtocol::SPMetaScaling)
-      {
-        auto & scaleDatagram = dynamic_cast<ScaleDatagram &>(*datagram); 
-        std::lock_guard<std::mutex> lock1(pointDefinitionMutex_); 
-        pointDefinition_ = scaleDatagram.pointDefinition(); 
-        std::lock_guard<std::mutex> lock2(nullPoseDefinitionMutex_); 
-        nullPoseDefinition_ = scaleDatagram.nullPoseDefinition(); 
-      } 
-      else if(datagram->messageType() == StreamingProtocol::SPTimeCode) 
-      {
-        auto & timeCodeDatagram = dynamic_cast<TimeCodeDatagram &>(*datagram); 
-        std::lock_guard<std::mutex> lock(timeCodeMutex_); 
-        timeCode_ = timeCodeDatagram.data(); 
-      }
-
     }
 
     buffer.clear();
