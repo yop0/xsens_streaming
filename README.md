@@ -15,7 +15,7 @@ cmake ..
 make -j8
 sudo -E make install
 ```
-Replace `cmake ..` with `cmake --DPYTHON_BINDING` to compile with Python bindings. 
+Replace `cmake ..` with `cmake --DPYTHON_BINDING ..` to compile with Python bindings. 
 
 ## Testing
 
