@@ -23,4 +23,7 @@ find_package(mtsdk REQUIRED COMPONENTS xstypes)
 
 add_subdirectory(src)
 add_subdirectory(CMakeModules)
-add_subdirectory(binding/python)
+
+if(${PYTHON_BINDING})
+	add_subdirectory(binding/python)
+endif()

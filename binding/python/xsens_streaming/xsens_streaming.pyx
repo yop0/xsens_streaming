@@ -4,7 +4,7 @@ cimport xsens_streaming.c_xsens_streaming as c_xsens_streaming
 
 cdef class UdpServer(object):
     def __cinit__(self, address: str = "localhost", port: int = 9763):
-        self.impl = new c_xsens_streaming.UdpServer(address, port)
+        self.impl = new c_xsens_streaming.UdpServer(address.encode(), port)
 
     def __dealloc__(self): 
         del self.impl
@@ -26,4 +26,25 @@ cdef class UdpServer(object):
 
     def jointAngles(self): 
         return self.impl.jointAngles()
+
+    def virtualMarkerPositions(self):
+        return self.impl.virtualMarkerPositions()
+
+    def linearSegmentKinematics(self):
+        return self.impl.linearSegmentKinematics()
+
+    def angularSegmentKinematics(self):
+        return self.impl.angularSegmentKinematics()
+
+    def euler(self):
+        return self.impl.euler()
+
+    def pointDefinition(self):
+        return self.impl.pointDefinition()
+
+    def nullPoseDefinition(self):
+        return self.impl.nullPoseDefinition()
+
+    def trackerData(self):
+        return self.impl.trackerData()
 
