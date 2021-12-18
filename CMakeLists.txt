@@ -9,6 +9,7 @@ set(CXX_DISABLE_WERROR 1)
 set(CMAKE_CXX_STANDARD 11)
 
 include(cmake/base.cmake)
+include(cmake/cython/cython.cmake)
 
 project(${PROJECT_NAME} LANGUAGES C CXX)
 
@@ -22,3 +23,4 @@ find_package(mtsdk REQUIRED COMPONENTS xstypes)
 
 add_subdirectory(src)
 add_subdirectory(CMakeModules)
+add_subdirectory(binding/python)
