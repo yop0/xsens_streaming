@@ -13,8 +13,10 @@ cd xsens_streaming
 mkdir build && cd build
 cmake ..
 make -j8
-sudo make install
+sudo -E make install
 ```
+Replace `cmake ..` with `cmake --DPYTHON_BINDING ..` to compile with Python bindings. 
+
 ## Testing
 
 A sample program is provided to read and print the received data:
