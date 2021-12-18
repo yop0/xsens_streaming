@@ -81,7 +81,7 @@ void JointAnglesDatagram::printData() const
 {
   for(int i = 0; i < m_data.size(); i++)
   {
-    std::cout << joint_names.at(i) << std::endl;  
+    std::cout << joint_names.at(i) << std::endl;
     // std::cout << "Parent Connection ID (256 * segment ID + point ID): " << m_data.at(i).parent << std::endl;
     // std::cout << "Child Connection ID (256 * segment ID + point ID): " << m_data.at(i).child << std::endl;
     // Rotation

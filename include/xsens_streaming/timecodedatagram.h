@@ -32,8 +32,8 @@
 class TimeCodeDatagram : public Datagram
 {
 public:
-  struct TimeCode 
-  {   
+  struct TimeCode
+  {
     long int nano;
     signed char hour;
     signed char minute;
@@ -45,7 +45,6 @@ public:
   virtual ~TimeCodeDatagram();
   virtual void printData() const override;
 
-
   inline const TimeCode & data() const
   {
     return m_data;
@@ -55,7 +54,7 @@ protected:
   virtual void deserializeData(Streamer & inputStreamer) override;
 
 private:
-  TimeCode m_data; 
+  TimeCode m_data;
 };
 
 #endif

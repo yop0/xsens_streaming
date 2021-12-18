@@ -31,7 +31,7 @@
 
 class AngularSegmentKinematicsDatagram : public Datagram
 {
-public: 
+public:
   struct Kinematics
   {
     int segmentId;

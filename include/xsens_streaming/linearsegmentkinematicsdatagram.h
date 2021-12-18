@@ -49,7 +49,6 @@ public:
     return m_data;
   }
 
-
 protected:
   virtual void deserializeData(Streamer & inputStreamer) override;
 

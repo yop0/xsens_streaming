@@ -64,7 +64,7 @@ void UdpServer::readMessages()
       auto datagram = m_parserManager->readDatagram(buffer, printDatagrams_);
       switch(datagram->messageType())
       {
-        case StreamingProtocol::SPPoseQuaternion: 
+        case StreamingProtocol::SPPoseQuaternion:
         {
           auto & quaternionDatagram = dynamic_cast<QuaternionDatagram &>(*datagram);
           std::lock_guard<std::mutex> lock(quaternionMutex_);
@@ -73,66 +73,66 @@ void UdpServer::readMessages()
         }
         case StreamingProtocol::SPJointAngles:
         {
-          auto & jointAnglesDatagram = dynamic_cast<JointAnglesDatagram &>(*datagram); 
-          std::lock_guard<std::mutex> lock(jointAnglesMutex_); 
-          jointAngles_ = jointAnglesDatagram.data();         
+          auto & jointAnglesDatagram = dynamic_cast<JointAnglesDatagram &>(*datagram);
+          std::lock_guard<std::mutex> lock(jointAnglesMutex_);
+          jointAngles_ = jointAnglesDatagram.data();
           break;
         }
         case StreamingProtocol::SPPoseEuler:
         {
-          auto & eulerDatagram = dynamic_cast<EulerDatagram &>(*datagram); 
-          std::lock_guard<std::mutex> lock(eulerMutex_); 
-          euler_ = eulerDatagram.data();         
+          auto & eulerDatagram = dynamic_cast<EulerDatagram &>(*datagram);
+          std::lock_guard<std::mutex> lock(eulerMutex_);
+          euler_ = eulerDatagram.data();
           break;
         }
         case StreamingProtocol::SPPosePositions:
         {
-          auto & positionDatagram = dynamic_cast<PositionDatagram &>(*datagram); 
-          std::lock_guard<std::mutex> lock(virtualMarkerPositionMutex_); 
-          virtualMarkerPositions_ = positionDatagram.data();         
+          auto & positionDatagram = dynamic_cast<PositionDatagram &>(*datagram);
+          std::lock_guard<std::mutex> lock(virtualMarkerPositionMutex_);
+          virtualMarkerPositions_ = positionDatagram.data();
           break;
         }
         case StreamingProtocol::SPLinearSegmentKinematics:
         {
-          auto & linearSegmentKinematicsDatagram = dynamic_cast<LinearSegmentKinematicsDatagram &>(*datagram); 
-          std::lock_guard<std::mutex> lock(linearSegmentKinematicsMutex_); 
-          linearSegmentKinematics_ = linearSegmentKinematicsDatagram.data();         
+          auto & linearSegmentKinematicsDatagram = dynamic_cast<LinearSegmentKinematicsDatagram &>(*datagram);
+          std::lock_guard<std::mutex> lock(linearSegmentKinematicsMutex_);
+          linearSegmentKinematics_ = linearSegmentKinematicsDatagram.data();
           break;
         }
         case StreamingProtocol::SPAngularSegmentKinematics:
         {
-          auto & angularSegmentKinematicsDatagram = dynamic_cast<AngularSegmentKinematicsDatagram &>(*datagram); 
-          std::lock_guard<std::mutex> lock(angularSegmentKinematicsMutex_); 
-          angularSegmentKinematics_ = angularSegmentKinematicsDatagram.data();         
+          auto & angularSegmentKinematicsDatagram = dynamic_cast<AngularSegmentKinematicsDatagram &>(*datagram);
+          std::lock_guard<std::mutex> lock(angularSegmentKinematicsMutex_);
+          angularSegmentKinematics_ = angularSegmentKinematicsDatagram.data();
           break;
         }
         case StreamingProtocol::SPTrackerKinematics:
         {
-          auto & trackerKinematicsDatagram = dynamic_cast<TrackerKinematicsDatagram &>(*datagram); 
-          std::lock_guard<std::mutex> lock(trackerDataMutex_); 
-          trackerData_ = trackerKinematicsDatagram.data();       
+          auto & trackerKinematicsDatagram = dynamic_cast<TrackerKinematicsDatagram &>(*datagram);
+          std::lock_guard<std::mutex> lock(trackerDataMutex_);
+          trackerData_ = trackerKinematicsDatagram.data();
           break;
         }
-        case StreamingProtocol::SPMetaScaling: 
+        case StreamingProtocol::SPMetaScaling:
         {
-          auto & scaleDatagram = dynamic_cast<ScaleDatagram &>(*datagram); 
-          std::lock_guard<std::mutex> lock1(pointDefinitionMutex_); 
-          pointDefinition_ = scaleDatagram.pointDefinition(); 
-          std::lock_guard<std::mutex> lock2(nullPoseDefinitionMutex_); 
-          nullPoseDefinition_ = scaleDatagram.nullPoseDefinition(); 
+          auto & scaleDatagram = dynamic_cast<ScaleDatagram &>(*datagram);
+          std::lock_guard<std::mutex> lock1(pointDefinitionMutex_);
+          pointDefinition_ = scaleDatagram.pointDefinition();
+          std::lock_guard<std::mutex> lock2(nullPoseDefinitionMutex_);
+          nullPoseDefinition_ = scaleDatagram.nullPoseDefinition();
           break;
         }
         case StreamingProtocol::SPTimeCode:
         {
-          auto & timeCodeDatagram = dynamic_cast<TimeCodeDatagram &>(*datagram); 
-          std::lock_guard<std::mutex> lock(timeCodeMutex_); 
-          timeCode_ = timeCodeDatagram.data(); 
+          auto & timeCodeDatagram = dynamic_cast<TimeCodeDatagram &>(*datagram);
+          std::lock_guard<std::mutex> lock(timeCodeMutex_);
+          timeCode_ = timeCodeDatagram.data();
         }
         case StreamingProtocol::SPCenterOfMass:
         {
-          auto & centerOfMassDatagram = dynamic_cast<CenterOfMassDatagram &>(*datagram); 
-          std::lock_guard<std::mutex> lock(comDataMutex_); 
-          comData_ = centerOfMassDatagram.data(); 
+          auto & centerOfMassDatagram = dynamic_cast<CenterOfMassDatagram &>(*datagram);
+          std::lock_guard<std::mutex> lock(comDataMutex_);
+          comData_ = centerOfMassDatagram.data();
         }
       }
     }

@@ -47,18 +47,19 @@ public:
     float pos[3];
   };
 
-
 public:
   ScaleDatagram();
   virtual ~ScaleDatagram();
 
   virtual void printData() const override;
-  inline const std::vector<NullPoseDefinition> & nullPoseDefinition() const {
+  inline const std::vector<NullPoseDefinition> & nullPoseDefinition() const
+  {
     return m_tPose;
-  } 
-  inline const std::vector<PointDefinition> & pointDefinition() const {
+  }
+  inline const std::vector<PointDefinition> & pointDefinition() const
+  {
     return m_pointDefinitions;
-  } 
+  }
 
 protected:
   virtual void deserializeData(Streamer & inputStreamer) override;

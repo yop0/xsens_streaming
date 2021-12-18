@@ -32,18 +32,18 @@
 #include <thread>
 #include <xsens/xssocket.h>
 #include <xsens/xsthread.h>
-#include <xsens_streaming/parsermanager.h>
-#include <xsens_streaming/streamer.h>
-#include <xsens_streaming/quaterniondatagram.h>
-#include <xsens_streaming/jointanglesdatagram.h>
-#include <xsens_streaming/eulerdatagram.h>
-#include <xsens_streaming/positiondatagram.h>
 #include <xsens_streaming/angularsegmentkinematicsdatagram.h>
-#include <xsens_streaming/linearsegmentkinematicsdatagram.h>
-#include <xsens_streaming/scaledatagram.h>
-#include <xsens_streaming/trackerkinematicsdatagram.h>
-#include <xsens_streaming/timecodedatagram.h>
 #include <xsens_streaming/centerofmassdatagram.h>
+#include <xsens_streaming/eulerdatagram.h>
+#include <xsens_streaming/jointanglesdatagram.h>
+#include <xsens_streaming/linearsegmentkinematicsdatagram.h>
+#include <xsens_streaming/parsermanager.h>
+#include <xsens_streaming/positiondatagram.h>
+#include <xsens_streaming/quaterniondatagram.h>
+#include <xsens_streaming/scaledatagram.h>
+#include <xsens_streaming/streamer.h>
+#include <xsens_streaming/timecodedatagram.h>
+#include <xsens_streaming/trackerkinematicsdatagram.h>
 
 struct Datagram;
 
@@ -63,9 +63,9 @@ public:
     return quaternions_;
   }
 
-  std::vector<JointAnglesDatagram::Joint> jointAngles() const 
+  std::vector<JointAnglesDatagram::Joint> jointAngles() const
   {
-    std::lock_guard<std::mutex> lock(jointAnglesMutex_); 
+    std::lock_guard<std::mutex> lock(jointAnglesMutex_);
     return jointAngles_;
   }
 
@@ -75,42 +75,36 @@ public:
     return virtualMarkerPositions_;
   }
 
-  
   std::vector<LinearSegmentKinematicsDatagram::Kinematics> linearSegmentKinematics() const
   {
     std::lock_guard<std::mutex> lock(linearSegmentKinematicsMutex_);
     return linearSegmentKinematics_;
   }
 
-  
   std::vector<EulerDatagram::Kinematics> euler() const
   {
     std::lock_guard<std::mutex> lock(eulerMutex_);
     return euler_;
   }
- 
-  
+
   std::vector<AngularSegmentKinematicsDatagram::Kinematics> angularSegmentKinematics() const
   {
     std::lock_guard<std::mutex> lock(angularSegmentKinematicsMutex_);
     return angularSegmentKinematics_;
   }
 
-  
   std::vector<ScaleDatagram::PointDefinition> pointDefinition() const
   {
     std::lock_guard<std::mutex> lock(pointDefinitionMutex_);
     return pointDefinition_;
   }
 
-  
   std::vector<ScaleDatagram::NullPoseDefinition> nullPoseDefinition() const
   {
     std::lock_guard<std::mutex> lock(nullPoseDefinitionMutex_);
     return nullPoseDefinition_;
   }
 
-  
   std::vector<TrackerKinematicsDatagram::Kinematics> trackerData() const
   {
     std::lock_guard<std::mutex> lock(trackerDataMutex_);
@@ -141,7 +135,7 @@ private:
   mutable std::mutex quaternionMutex_;
 
   std::vector<JointAnglesDatagram::Joint> jointAngles_;
-  mutable std::mutex jointAnglesMutex_; 
+  mutable std::mutex jointAnglesMutex_;
 
   std::vector<PositionDatagram::VirtualMarkerSet> virtualMarkerPositions_;
   mutable std::mutex virtualMarkerPositionMutex_;
@@ -149,7 +143,7 @@ private:
   std::vector<LinearSegmentKinematicsDatagram::Kinematics> linearSegmentKinematics_;
   mutable std::mutex linearSegmentKinematicsMutex_;
 
-  std::vector<EulerDatagram::Kinematics> euler_; 
+  std::vector<EulerDatagram::Kinematics> euler_;
   mutable std::mutex eulerMutex_;
 
   std::vector<AngularSegmentKinematicsDatagram::Kinematics> angularSegmentKinematics_;
