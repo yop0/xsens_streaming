@@ -55,6 +55,12 @@ public:
     return quaternions_;
   }
 
+  std::vector<JointAnglesDatagram::Joint> jointAngles() const 
+  {
+    std::lock_guard<std::mutex> lock(jointAnglesMutex_); 
+    return jointAngles_;
+  }
+
   void printDatagrams(bool print)
   {
     printDatagrams_ = print;
