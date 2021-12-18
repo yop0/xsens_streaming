@@ -111,6 +111,12 @@ void UdpServer::readMessages()
         pointDefinition_ = scaleDatagram.pointDefinition(); 
         std::lock_guard<std::mutex> lock2(nullPoseDefinitionMutex_); 
         nullPoseDefinition_ = scaleDatagram.nullPoseDefinition(); 
+      } 
+      else if(datagram->messageType() == StreamingProtocol::SPTimeCode) 
+      {
+        auto & timeCodeDatagram = dynamic_cast<TimeCodeDatagram &>(*datagram); 
+        std::lock_guard<std::mutex> lock(timeCodeMutex_); 
+        timeCode_ = timeCodeDatagram.data(); 
       }
 
     }

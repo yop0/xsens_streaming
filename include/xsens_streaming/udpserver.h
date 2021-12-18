@@ -42,6 +42,7 @@
 #include <xsens_streaming/linearsegmentkinematicsdatagram.h>
 #include <xsens_streaming/scaledatagram.h>
 #include <xsens_streaming/trackerkinematicsdatagram.h>
+#include <xsens_streaming/timecodedatagram.h>
 
 struct Datagram;
 
@@ -115,7 +116,11 @@ public:
     return trackerData_;
   }
 
-
+  TimeCodeDatagram::TimeCode timeCode() const
+  {
+    std::lock_guard<std::mutex> lock(timeCodeMutex_);
+    return timeCode_;
+  }
 
   void printDatagrams(bool print)
   {
@@ -151,6 +156,9 @@ private:
 
   std::vector<TrackerKinematicsDatagram::Kinematics> trackerData_;
   mutable std::mutex trackerDataMutex_;
+
+  TimeCodeDatagram::TimeCode timeCode_;
+  mutable std::mutex timeCodeMutex_;
 
   std::unique_ptr<XsSocket> m_socket;
   uint16_t m_port;

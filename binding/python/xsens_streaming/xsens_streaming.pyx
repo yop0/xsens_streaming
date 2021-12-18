@@ -48,3 +48,6 @@ cdef class UdpServer(object):
     def trackerData(self):
         return self.impl.trackerData()
 
+    def timeCode(self):
+        return self.impl.timeCode()
+

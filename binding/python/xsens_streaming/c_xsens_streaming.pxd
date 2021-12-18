@@ -62,6 +62,13 @@ cdef extern from "<xsens_streaming/scaledatagram.h>" namespace "ScaleDatagram":
         string segmentName
         float pos[3]
 
+cdef extern from "<xsens_streaming/timecodedatagram.h>" namespace "TimeCodeDatagram": 
+    cdef struct TimeCode:
+        long int nano
+        signed char hour
+        signed char minute
+        signed char second
+
 cdef extern from "<xsens_streaming/udpserver.h>":
     cdef cppclass UdpServer:
         UdpServer(const string&, unsigned int port)
@@ -83,5 +90,6 @@ cdef extern from "<xsens_streaming/udpserver.h>":
         vector[PointDefinition] pointDefinition()
         vector[NullPoseDefinition] nullPoseDefinition()
         vector[TrackerKinematics] trackerData()
+        TimeCode timeCode()
 
         

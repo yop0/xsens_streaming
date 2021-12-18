@@ -31,20 +31,31 @@
 
 class TimeCodeDatagram : public Datagram
 {
+public:
+  struct TimeCode 
+  {   
+    long int nano;
+    signed char hour;
+    signed char minute;
+    signed char second;
+  };
 
 public:
   TimeCodeDatagram();
   virtual ~TimeCodeDatagram();
   virtual void printData() const override;
 
+
+  inline const TimeCode & data() const
+  {
+    return m_data;
+  }
+
 protected:
   virtual void deserializeData(Streamer & inputStreamer) override;
 
 private:
-  long int m_nano;
-  signed char m_hour;
-  signed char m_minute;
-  signed char m_second;
+  TimeCode m_data; 
 };
 
 #endif
