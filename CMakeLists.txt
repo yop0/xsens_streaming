@@ -25,5 +25,5 @@ add_subdirectory(src)
 add_subdirectory(CMakeModules)
 
 if(${PYTHON_BINDING})
-	add_subdirectory(binding/python)
+    add_subdirectory(binding/python)
 endif()
