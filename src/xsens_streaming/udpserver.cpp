@@ -116,9 +116,8 @@ void UdpServer::readMessages()
         case StreamingProtocol::SPMetaScaling:
         {
           auto & scaleDatagram = dynamic_cast<ScaleDatagram &>(*datagram);
-          std::lock_guard<std::mutex> lock1(pointDefinitionMutex_);
+          std::lock_guard<std::mutex> lock(dataDefinitionMutex_);
           pointDefinition_ = scaleDatagram.pointDefinition();
-          std::lock_guard<std::mutex> lock2(nullPoseDefinitionMutex_);
           nullPoseDefinition_ = scaleDatagram.nullPoseDefinition();
           break;
         }

@@ -95,13 +95,13 @@ public:
 
   std::vector<ScaleDatagram::PointDefinition> pointDefinition() const
   {
-    std::lock_guard<std::mutex> lock(pointDefinitionMutex_);
+    std::lock_guard<std::mutex> lock(dataDefinitionMutex_);
     return pointDefinition_;
   }
 
   std::vector<ScaleDatagram::NullPoseDefinition> nullPoseDefinition() const
   {
-    std::lock_guard<std::mutex> lock(nullPoseDefinitionMutex_);
+    std::lock_guard<std::mutex> lock(dataDefinitionMutex_);
     return nullPoseDefinition_;
   }
 
@@ -150,10 +150,8 @@ private:
   mutable std::mutex angularSegmentKinematicsMutex_;
 
   std::vector<ScaleDatagram::PointDefinition> pointDefinition_;
-  mutable std::mutex pointDefinitionMutex_;
-
   std::vector<ScaleDatagram::NullPoseDefinition> nullPoseDefinition_;
-  mutable std::mutex nullPoseDefinitionMutex_;
+  mutable std::mutex dataDefinitionMutex_;
 
   std::vector<TrackerKinematicsDatagram::Kinematics> trackerData_;
   mutable std::mutex trackerDataMutex_;
