@@ -53,7 +53,7 @@ jobs:
         compiler: ${{ matrix.compiler }}
         build-type: ${{ matrix.build-type }}
         ubuntu: |
-          apt: libmc-rtc-dev libboost-all-dev cython cython3 
+          apt: libmc-rtc-dev libboost-all-dev cython cython3 python-setuptools python3-setuptools
           apt-mirrors:
             mc-rtc:
               cloudsmith: mc-rtc/head
