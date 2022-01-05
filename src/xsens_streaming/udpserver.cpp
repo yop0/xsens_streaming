@@ -26,7 +26,10 @@
 
 #include <xsens_streaming/udpserver.h>
 
-UdpServer::UdpServer(XsString address, uint16_t port) : m_started(false), m_stopping(false)
+UdpServer::UdpServer(XsString address, uint16_t port) : 
+  m_started(false), m_stopping(false), isQuaternionAvail_(false), isJointAnglesAvail_(false), 
+  isLinearSegmentKinematicAvail_(false), isAngularSegmentKinematicsAvail_(false), isEulerAvail_(false),
+  isTimeCodeAvail_(false), isComDataAvail_(false), isTrackerDataAvail_(false)
 {
   m_port = port;
   m_hostName = address;

@@ -100,4 +100,14 @@ cdef extern from "<xsens_streaming/udpserver.h>":
         TimeCode timeCode()
         CoMKinematics comData()
 
-        
+        void waitQuaternions()
+        void waitJointAngles()
+        void waitVirtualMarkerPositions()
+        void waitLinearSegmentKinematics()
+        void waitAngularSegmentKinematics()
+        void waitEuler()
+        void waitPointDefinition()
+        void waitNullPoseDefinition()
+        void waitTrackerData()
+        void waitTimeCode()
+        void waitComData()

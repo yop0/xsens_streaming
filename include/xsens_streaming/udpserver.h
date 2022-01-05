@@ -213,54 +213,54 @@ private:
   std::vector<QuaternionDatagram::Kinematics> quaternions_;
   mutable std::mutex quaternionMutex_;
   mutable std::condition_variable quaternionCV_;
-  mutable bool isQuaternionAvail_ = false; 
+  mutable bool isQuaternionAvail_; 
 
   std::vector<JointAnglesDatagram::Joint> jointAngles_;
   mutable std::mutex jointAnglesMutex_;
   mutable std::condition_variable jointAnglesCV_;
-  mutable bool isJointAnglesAvail_ = false; 
+  mutable bool isJointAnglesAvail_; 
 
   std::vector<PositionDatagram::VirtualMarkerSet> virtualMarkerPositions_;
   mutable std::mutex virtualMarkerPositionMutex_;
   mutable std::condition_variable virtualMarkerPositionCV_;
-  mutable bool isVirtualMarkerPositionAvail_ = false; 
+  mutable bool isVirtualMarkerPositionAvail_; 
 
   std::vector<LinearSegmentKinematicsDatagram::Kinematics> linearSegmentKinematics_;
   mutable std::mutex linearSegmentKinematicsMutex_;
   mutable std::condition_variable linearSegmentKinematicsCV_;
-  mutable bool isLinearSegmentKinematicAvail_ = false; 
+  mutable bool isLinearSegmentKinematicAvail_; 
 
   std::vector<EulerDatagram::Kinematics> euler_;
   mutable std::mutex eulerMutex_;
   mutable std::condition_variable eulerCV_;
-  mutable bool isEulerAvail_ = false; 
+  mutable bool isEulerAvail_; 
 
   std::vector<AngularSegmentKinematicsDatagram::Kinematics> angularSegmentKinematics_;
   mutable std::mutex angularSegmentKinematicsMutex_;
   mutable std::condition_variable angularSegmentKinematicsCV_;
-  mutable bool isAngularSegmentKinematicsAvail_ = false; 
+  mutable bool isAngularSegmentKinematicsAvail_; 
 
   std::vector<ScaleDatagram::PointDefinition> pointDefinition_;
   std::vector<ScaleDatagram::NullPoseDefinition> nullPoseDefinition_;
   mutable std::mutex dataDefinitionMutex_;
   mutable std::condition_variable dataDefinitionCV_;
-  mutable bool isPointDefinitionAvail_ = false; 
-  mutable bool isNullPoseDefinitionAvail_ = false; 
+  mutable bool isPointDefinitionAvail_; 
+  mutable bool isNullPoseDefinitionAvail_; 
 
   std::vector<TrackerKinematicsDatagram::Kinematics> trackerData_;
   mutable std::mutex trackerDataMutex_;
   mutable std::condition_variable trackerDataCV_;
-  mutable bool isTrackerDataAvail_ = false; 
+  mutable bool isTrackerDataAvail_; 
 
   TimeCodeDatagram::TimeCode timeCode_;
   mutable std::mutex timeCodeMutex_;
   mutable std::condition_variable timeCodeCV_;
-  mutable bool isTimeCodeAvail_ = false; 
+  mutable bool isTimeCodeAvail_; 
 
   CenterOfMassDatagram::Kinematics comData_;
   mutable std::mutex comDataMutex_;
   mutable std::condition_variable comDataCV_;
-  mutable bool isComDataAvail_ = false; 
+  mutable bool isComDataAvail_; 
 
   std::unique_ptr<XsSocket> m_socket;
   uint16_t m_port;

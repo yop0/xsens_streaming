@@ -54,3 +54,38 @@ cdef class UdpServer(object):
     def comData(self):
         return self.impl.comData()
 
+    def waitQuaternions(self):
+        return self.impl.waitQuaternions()
+
+    def waitJointAngles(self):
+        return self.impl.waitJointAngles()
+
+    def waitVirtualMarkerPositions(self):
+        return self.impl.waitVirtualMarkerPositions()
+
+    def waitLinearSegmentKinematics(self):
+        return self.impl.waitLinearSegmentKinematics()
+
+    def waitAngularSegmentKinematics(self):
+        return self.impl.waitAngularSegmentKinematics()
+
+    def waitEuler(self):
+        return self.impl.waitEuler()
+
+    def waitPointDefinition(self):
+        return self.impl.waitPointDefinition()
+
+    def waitNullPoseDefinition(self):
+        return self.impl.waitNullPoseDefinition()
+
+    def waitTrackerData(self):
+        return self.impl.waitTrackerData()
+
+    def waitTimeCode(self):
+        return self.impl.waitTimeCode()
+
+    def waitComData(self):
+        return self.impl.waitComData()
+
+    
+
