@@ -28,9 +28,9 @@
 #define UDPSERVER_H
 
 #include <atomic>
+#include <condition_variable>
 #include <mutex>
 #include <thread>
-#include <condition_variable>
 
 #include <xsens/xssocket.h>
 #include <xsens/xsthread.h>
@@ -76,63 +76,63 @@ public:
   std::vector<PositionDatagram::VirtualMarkerSet> virtualMarkerPositions() const
   {
     std::lock_guard<std::mutex> lock(virtualMarkerPositionMutex_);
-    isVirtualMarkerPositionAvail_ = false; 
+    isVirtualMarkerPositionAvail_ = false;
     return virtualMarkerPositions_;
   }
 
   std::vector<LinearSegmentKinematicsDatagram::Kinematics> linearSegmentKinematics() const
   {
     std::lock_guard<std::mutex> lock(linearSegmentKinematicsMutex_);
-    isLinearSegmentKinematicAvail_ = false; 
+    isLinearSegmentKinematicAvail_ = false;
     return linearSegmentKinematics_;
   }
 
   std::vector<EulerDatagram::Kinematics> euler() const
   {
     std::lock_guard<std::mutex> lock(eulerMutex_);
-    isEulerAvail_ = false; 
+    isEulerAvail_ = false;
     return euler_;
   }
 
   std::vector<AngularSegmentKinematicsDatagram::Kinematics> angularSegmentKinematics() const
   {
     std::lock_guard<std::mutex> lock(angularSegmentKinematicsMutex_);
-    isAngularSegmentKinematicsAvail_ = false; 
+    isAngularSegmentKinematicsAvail_ = false;
     return angularSegmentKinematics_;
   }
 
   std::vector<ScaleDatagram::PointDefinition> pointDefinition() const
   {
     std::lock_guard<std::mutex> lock(dataDefinitionMutex_);
-    isPointDefinitionAvail_ = false; 
+    isPointDefinitionAvail_ = false;
     return pointDefinition_;
   }
 
   std::vector<ScaleDatagram::NullPoseDefinition> nullPoseDefinition() const
   {
     std::lock_guard<std::mutex> lock(dataDefinitionMutex_);
-    isNullPoseDefinitionAvail_ = false; 
+    isNullPoseDefinitionAvail_ = false;
     return nullPoseDefinition_;
   }
 
   std::vector<TrackerKinematicsDatagram::Kinematics> trackerData() const
   {
     std::lock_guard<std::mutex> lock(trackerDataMutex_);
-    isTrackerDataAvail_ = false; 
+    isTrackerDataAvail_ = false;
     return trackerData_;
   }
 
   TimeCodeDatagram::TimeCode timeCode() const
   {
     std::lock_guard<std::mutex> lock(timeCodeMutex_);
-    isTimeCodeAvail_ = false; 
+    isTimeCodeAvail_ = false;
     return timeCode_;
   }
 
   CenterOfMassDatagram::Kinematics comData() const
   {
     std::lock_guard<std::mutex> lock(comDataMutex_);
-    isComDataAvail_ = false; 
+    isComDataAvail_ = false;
     return comData_;
   }
 
@@ -143,68 +143,68 @@ public:
 
   void waitQuaternions() const
   {
-    std::unique_lock<std::mutex> lock(quaternionMutex_); 
-    quaternionCV_.wait(lock, [this]{ return isQuaternionAvail_; });
+    std::unique_lock<std::mutex> lock(quaternionMutex_);
+    quaternionCV_.wait(lock, [this] { return isQuaternionAvail_; });
   }
 
   void waitJointAngles() const
   {
-    std::unique_lock<std::mutex> lock(jointAnglesMutex_); 
-    jointAnglesCV_.wait(lock, [this]{ return isJointAnglesAvail_; }); 
+    std::unique_lock<std::mutex> lock(jointAnglesMutex_);
+    jointAnglesCV_.wait(lock, [this] { return isJointAnglesAvail_; });
   }
 
   void waitVirtualMarkerPositions() const
   {
-    std::unique_lock<std::mutex> lock(virtualMarkerPositionMutex_); 
-    virtualMarkerPositionCV_.wait(lock, [this]{ return isVirtualMarkerPositionAvail_; }); 
+    std::unique_lock<std::mutex> lock(virtualMarkerPositionMutex_);
+    virtualMarkerPositionCV_.wait(lock, [this] { return isVirtualMarkerPositionAvail_; });
   }
 
   void waitLinearSegmentKinematics() const
   {
-    std::unique_lock<std::mutex> lock(linearSegmentKinematicsMutex_); 
-    linearSegmentKinematicsCV_.wait(lock, [this]{ return isLinearSegmentKinematicAvail_; });
+    std::unique_lock<std::mutex> lock(linearSegmentKinematicsMutex_);
+    linearSegmentKinematicsCV_.wait(lock, [this] { return isLinearSegmentKinematicAvail_; });
   }
 
   void waitEuler() const
   {
-    std::unique_lock<std::mutex> lock(eulerMutex_); 
-    eulerCV_.wait(lock, [this]{ return isEulerAvail_; }); 
+    std::unique_lock<std::mutex> lock(eulerMutex_);
+    eulerCV_.wait(lock, [this] { return isEulerAvail_; });
   }
 
   void waitAngularSegmentKinematics() const
   {
-    std::unique_lock<std::mutex> lock(angularSegmentKinematicsMutex_); 
-    angularSegmentKinematicsCV_.wait(lock, [this]{ return isAngularSegmentKinematicsAvail_; });
+    std::unique_lock<std::mutex> lock(angularSegmentKinematicsMutex_);
+    angularSegmentKinematicsCV_.wait(lock, [this] { return isAngularSegmentKinematicsAvail_; });
   }
 
   void waitPointDefinition() const
   {
-    std::unique_lock<std::mutex> lock(dataDefinitionMutex_); 
-    dataDefinitionCV_.wait(lock, [this]{ return isPointDefinitionAvail_; });
+    std::unique_lock<std::mutex> lock(dataDefinitionMutex_);
+    dataDefinitionCV_.wait(lock, [this] { return isPointDefinitionAvail_; });
   }
 
   void waitNullPoseDefinition() const
   {
-    std::unique_lock<std::mutex> lock(dataDefinitionMutex_); 
-    dataDefinitionCV_.wait(lock, [this]{ return isNullPoseDefinitionAvail_; }); 
+    std::unique_lock<std::mutex> lock(dataDefinitionMutex_);
+    dataDefinitionCV_.wait(lock, [this] { return isNullPoseDefinitionAvail_; });
   }
 
   void waitTrackerData() const
   {
-    std::unique_lock<std::mutex> lock(trackerDataMutex_); 
-    trackerDataCV_.wait(lock, [this]{ return isTrackerDataAvail_; });
+    std::unique_lock<std::mutex> lock(trackerDataMutex_);
+    trackerDataCV_.wait(lock, [this] { return isTrackerDataAvail_; });
   }
 
   void waitTimeCode() const
   {
-    std::unique_lock<std::mutex> lock(timeCodeMutex_); 
-    timeCodeCV_.wait(lock, [this]{ return isTimeCodeAvail_; });
+    std::unique_lock<std::mutex> lock(timeCodeMutex_);
+    timeCodeCV_.wait(lock, [this] { return isTimeCodeAvail_; });
   }
 
   void waitComData() const
   {
     std::unique_lock<std::mutex> lock(comDataMutex_);
-    comDataCV_.wait(lock, [this]{ return isComDataAvail_; });
+    comDataCV_.wait(lock, [this] { return isComDataAvail_; });
   }
 
 private:
@@ -213,54 +213,54 @@ private:
   std::vector<QuaternionDatagram::Kinematics> quaternions_;
   mutable std::mutex quaternionMutex_;
   mutable std::condition_variable quaternionCV_;
-  mutable bool isQuaternionAvail_; 
+  mutable bool isQuaternionAvail_;
 
   std::vector<JointAnglesDatagram::Joint> jointAngles_;
   mutable std::mutex jointAnglesMutex_;
   mutable std::condition_variable jointAnglesCV_;
-  mutable bool isJointAnglesAvail_; 
+  mutable bool isJointAnglesAvail_;
 
   std::vector<PositionDatagram::VirtualMarkerSet> virtualMarkerPositions_;
   mutable std::mutex virtualMarkerPositionMutex_;
   mutable std::condition_variable virtualMarkerPositionCV_;
-  mutable bool isVirtualMarkerPositionAvail_; 
+  mutable bool isVirtualMarkerPositionAvail_;
 
   std::vector<LinearSegmentKinematicsDatagram::Kinematics> linearSegmentKinematics_;
   mutable std::mutex linearSegmentKinematicsMutex_;
   mutable std::condition_variable linearSegmentKinematicsCV_;
-  mutable bool isLinearSegmentKinematicAvail_; 
+  mutable bool isLinearSegmentKinematicAvail_;
 
   std::vector<EulerDatagram::Kinematics> euler_;
   mutable std::mutex eulerMutex_;
   mutable std::condition_variable eulerCV_;
-  mutable bool isEulerAvail_; 
+  mutable bool isEulerAvail_;
 
   std::vector<AngularSegmentKinematicsDatagram::Kinematics> angularSegmentKinematics_;
   mutable std::mutex angularSegmentKinematicsMutex_;
   mutable std::condition_variable angularSegmentKinematicsCV_;
-  mutable bool isAngularSegmentKinematicsAvail_; 
+  mutable bool isAngularSegmentKinematicsAvail_;
 
   std::vector<ScaleDatagram::PointDefinition> pointDefinition_;
   std::vector<ScaleDatagram::NullPoseDefinition> nullPoseDefinition_;
   mutable std::mutex dataDefinitionMutex_;
   mutable std::condition_variable dataDefinitionCV_;
-  mutable bool isPointDefinitionAvail_; 
-  mutable bool isNullPoseDefinitionAvail_; 
+  mutable bool isPointDefinitionAvail_;
+  mutable bool isNullPoseDefinitionAvail_;
 
   std::vector<TrackerKinematicsDatagram::Kinematics> trackerData_;
   mutable std::mutex trackerDataMutex_;
   mutable std::condition_variable trackerDataCV_;
-  mutable bool isTrackerDataAvail_; 
+  mutable bool isTrackerDataAvail_;
 
   TimeCodeDatagram::TimeCode timeCode_;
   mutable std::mutex timeCodeMutex_;
   mutable std::condition_variable timeCodeCV_;
-  mutable bool isTimeCodeAvail_; 
+  mutable bool isTimeCodeAvail_;
 
   CenterOfMassDatagram::Kinematics comData_;
   mutable std::mutex comDataMutex_;
   mutable std::condition_variable comDataCV_;
-  mutable bool isComDataAvail_; 
+  mutable bool isComDataAvail_;
 
   std::unique_ptr<XsSocket> m_socket;
   uint16_t m_port;

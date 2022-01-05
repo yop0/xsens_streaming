@@ -26,8 +26,8 @@
 
 #include <xsens_streaming/udpserver.h>
 
-UdpServer::UdpServer(XsString address, uint16_t port) : 
-  m_started(false), m_stopping(false), isQuaternionAvail_(false), isJointAnglesAvail_(false), 
+UdpServer::UdpServer(XsString address, uint16_t port)
+: m_started(false), m_stopping(false), isQuaternionAvail_(false), isJointAnglesAvail_(false),
   isLinearSegmentKinematicAvail_(false), isAngularSegmentKinematicsAvail_(false), isEulerAvail_(false),
   isTimeCodeAvail_(false), isComDataAvail_(false), isTrackerDataAvail_(false)
 {
@@ -90,7 +90,7 @@ void UdpServer::readMessages()
           auto & eulerDatagram = dynamic_cast<EulerDatagram &>(*datagram);
           std::lock_guard<std::mutex> lock(eulerMutex_);
           euler_ = eulerDatagram.data();
-          isEulerAvail_ = true; 
+          isEulerAvail_ = true;
           eulerCV_.notify_all();
           break;
         }
@@ -100,7 +100,7 @@ void UdpServer::readMessages()
           std::lock_guard<std::mutex> lock(virtualMarkerPositionMutex_);
           virtualMarkerPositions_ = positionDatagram.data();
           isVirtualMarkerPositionAvail_ = true;
-          eulerCV_.notify_all(); 
+          eulerCV_.notify_all();
           break;
         }
         case StreamingProtocol::SPLinearSegmentKinematics:
@@ -108,8 +108,8 @@ void UdpServer::readMessages()
           auto & linearSegmentKinematicsDatagram = dynamic_cast<LinearSegmentKinematicsDatagram &>(*datagram);
           std::lock_guard<std::mutex> lock(linearSegmentKinematicsMutex_);
           linearSegmentKinematics_ = linearSegmentKinematicsDatagram.data();
-          isLinearSegmentKinematicAvail_ = true; 
-          linearSegmentKinematicsCV_.notify_all(); 
+          isLinearSegmentKinematicAvail_ = true;
+          linearSegmentKinematicsCV_.notify_all();
           break;
         }
         case StreamingProtocol::SPAngularSegmentKinematics:
@@ -118,7 +118,7 @@ void UdpServer::readMessages()
           std::lock_guard<std::mutex> lock(angularSegmentKinematicsMutex_);
           angularSegmentKinematics_ = angularSegmentKinematicsDatagram.data();
           isAngularSegmentKinematicsAvail_ = true;
-          angularSegmentKinematicsCV_.notify_all(); 
+          angularSegmentKinematicsCV_.notify_all();
           break;
         }
         case StreamingProtocol::SPTrackerKinematics:
@@ -126,8 +126,8 @@ void UdpServer::readMessages()
           auto & trackerKinematicsDatagram = dynamic_cast<TrackerKinematicsDatagram &>(*datagram);
           std::lock_guard<std::mutex> lock(trackerDataMutex_);
           trackerData_ = trackerKinematicsDatagram.data();
-          isTrackerDataAvail_ = true; 
-          trackerDataCV_.notify_all(); 
+          isTrackerDataAvail_ = true;
+          trackerDataCV_.notify_all();
           break;
         }
         case StreamingProtocol::SPMetaScaling:
@@ -138,7 +138,7 @@ void UdpServer::readMessages()
           nullPoseDefinition_ = scaleDatagram.nullPoseDefinition();
           isPointDefinitionAvail_ = true;
           isNullPoseDefinitionAvail_ = true;
-          dataDefinitionCV_.notify_all(); 
+          dataDefinitionCV_.notify_all();
           break;
         }
         case StreamingProtocol::SPTimeCode:
@@ -155,9 +155,9 @@ void UdpServer::readMessages()
           auto & centerOfMassDatagram = dynamic_cast<CenterOfMassDatagram &>(*datagram);
           std::lock_guard<std::mutex> lock(comDataMutex_);
           comData_ = centerOfMassDatagram.data();
-          isComDataAvail_ = true; 
-          comDataCV_.notify_all(); 
-          break; 
+          isComDataAvail_ = true;
+          comDataCV_.notify_all();
+          break;
         }
       }
     }
