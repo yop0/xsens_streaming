@@ -69,6 +69,8 @@ void UdpServer::readMessages()
           auto & quaternionDatagram = dynamic_cast<QuaternionDatagram &>(*datagram);
           std::lock_guard<std::mutex> lock(quaternionMutex_);
           quaternions_ = quaternionDatagram.data();
+          isQuaternionAvail_ = true;
+          quaternionCV_.notify_all();
           break;
         }
         case StreamingProtocol::SPJointAngles:
@@ -76,6 +78,8 @@ void UdpServer::readMessages()
           auto & jointAnglesDatagram = dynamic_cast<JointAnglesDatagram &>(*datagram);
           std::lock_guard<std::mutex> lock(jointAnglesMutex_);
           jointAngles_ = jointAnglesDatagram.data();
+          isJointAnglesAvail_ = true;
+          jointAnglesCV_.notify_all();
           break;
         }
         case StreamingProtocol::SPPoseEuler:
@@ -83,6 +87,8 @@ void UdpServer::readMessages()
           auto & eulerDatagram = dynamic_cast<EulerDatagram &>(*datagram);
           std::lock_guard<std::mutex> lock(eulerMutex_);
           euler_ = eulerDatagram.data();
+          isEulerAvail_ = true; 
+          eulerCV_.notify_all();
           break;
         }
         case StreamingProtocol::SPPosePositions:
@@ -90,6 +96,8 @@ void UdpServer::readMessages()
           auto & positionDatagram = dynamic_cast<PositionDatagram &>(*datagram);
           std::lock_guard<std::mutex> lock(virtualMarkerPositionMutex_);
           virtualMarkerPositions_ = positionDatagram.data();
+          isVirtualMarkerPositionAvail_ = true;
+          eulerCV_.notify_all(); 
           break;
         }
         case StreamingProtocol::SPLinearSegmentKinematics:
@@ -97,6 +105,8 @@ void UdpServer::readMessages()
           auto & linearSegmentKinematicsDatagram = dynamic_cast<LinearSegmentKinematicsDatagram &>(*datagram);
           std::lock_guard<std::mutex> lock(linearSegmentKinematicsMutex_);
           linearSegmentKinematics_ = linearSegmentKinematicsDatagram.data();
+          isLinearSegmentKinematicAvail_ = true; 
+          linearSegmentKinematicsCV_.notify_all(); 
           break;
         }
         case StreamingProtocol::SPAngularSegmentKinematics:
@@ -104,6 +114,8 @@ void UdpServer::readMessages()
           auto & angularSegmentKinematicsDatagram = dynamic_cast<AngularSegmentKinematicsDatagram &>(*datagram);
           std::lock_guard<std::mutex> lock(angularSegmentKinematicsMutex_);
           angularSegmentKinematics_ = angularSegmentKinematicsDatagram.data();
+          isAngularSegmentKinematicsAvail_ = true;
+          angularSegmentKinematicsCV_.notify_all(); 
           break;
         }
         case StreamingProtocol::SPTrackerKinematics:
@@ -111,6 +123,8 @@ void UdpServer::readMessages()
           auto & trackerKinematicsDatagram = dynamic_cast<TrackerKinematicsDatagram &>(*datagram);
           std::lock_guard<std::mutex> lock(trackerDataMutex_);
           trackerData_ = trackerKinematicsDatagram.data();
+          isTrackerDataAvail_ = true; 
+          trackerDataCV_.notify_all(); 
           break;
         }
         case StreamingProtocol::SPMetaScaling:
@@ -119,6 +133,9 @@ void UdpServer::readMessages()
           std::lock_guard<std::mutex> lock(dataDefinitionMutex_);
           pointDefinition_ = scaleDatagram.pointDefinition();
           nullPoseDefinition_ = scaleDatagram.nullPoseDefinition();
+          isPointDefinitionAvail_ = true;
+          isNullPoseDefinitionAvail_ = true;
+          dataDefinitionCV_.notify_all(); 
           break;
         }
         case StreamingProtocol::SPTimeCode:
@@ -126,12 +143,18 @@ void UdpServer::readMessages()
           auto & timeCodeDatagram = dynamic_cast<TimeCodeDatagram &>(*datagram);
           std::lock_guard<std::mutex> lock(timeCodeMutex_);
           timeCode_ = timeCodeDatagram.data();
+          isTimeCodeAvail_ = true;
+          timeCodeCV_.notify_all();
+          break;
         }
         case StreamingProtocol::SPCenterOfMass:
         {
           auto & centerOfMassDatagram = dynamic_cast<CenterOfMassDatagram &>(*datagram);
           std::lock_guard<std::mutex> lock(comDataMutex_);
           comData_ = centerOfMassDatagram.data();
+          isComDataAvail_ = true; 
+          comDataCV_.notify_all(); 
+          break; 
         }
       }
     }
