@@ -34,9 +34,10 @@ class JointAnglesDatagram : public Datagram
 public:
   struct Joint
   {
+    float rotation[3];
+    std::string name;
     int32_t parent;
     int32_t child;
-    float rotation[3];
   };
 
 public:

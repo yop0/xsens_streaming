@@ -60,7 +60,7 @@ void JointAnglesDatagram::deserializeData(Streamer & inputStreamer)
 
   for(int i = 0; i < dataCount(); i++)
   {
-    Joint joint;
+    Joint joint = { .name = joint_names.at(i) } ;
 
     // Parent Connection ID  -> 4 byte
     streamer->read(joint.parent);

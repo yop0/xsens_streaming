@@ -5,9 +5,10 @@ from libcpp.vector cimport vector
 
 cdef extern from "<xsens_streaming/jointanglesdatagram.h>": 
     cdef struct JointAngles "JointAnglesDatagram::Joint": 
+        float rotation[3]
+        string name
         unsigned int parent
         unsigned int child 
-        float rotation[3]
 
 cdef extern from "<xsens_streaming/quaterniondatagram.h>":
     cdef struct QuatKinematics "QuaternionDatagram::Kinematics":
