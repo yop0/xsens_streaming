@@ -24,25 +24,29 @@
   OTHER DEALINGS IN THE SOFTWARE.
 */
 
+#include <sstream>
 #include <xsens_streaming/udpserver.h>
 
 UdpServer::UdpServer(XsString address, uint16_t port)
-: m_started(false), m_stopping(false), isQuaternionAvail_(false), isJointAnglesAvail_(false),
-  isLinearSegmentKinematicAvail_(false), isAngularSegmentKinematicsAvail_(false), isEulerAvail_(false),
-  isTimeCodeAvail_(false), isComDataAvail_(false), isTrackerDataAvail_(false)
 {
-  m_port = port;
-  m_hostName = address;
+  port_ = port;
+  hostName_ = address;
 
-  m_parserManager.reset(new ParserManager());
-  m_socket.reset(new XsSocket(IpProtocol::IP_UDP, NetworkLayerProtocol::NLP_IPV4));
+  parserManager_.reset(new ParserManager());
+  socket_.reset(new XsSocket(IpProtocol::IP_UDP, NetworkLayerProtocol::NLP_IPV4));
 
-  XsResultValue res = m_socket->bind(m_hostName, m_port);
+  XsResultValue res = socket_->bind(hostName_, port_);
 
   if(res == XRV_OK)
+  {
     startThread();
+  }
   else
-    std::cout << "Failed to bind UDP socket (host: " << m_hostName << ", port: " << m_port << ")" << std::endl;
+  {
+    std::stringstream ss;
+    ss << "Failed to bind UDP socket (host: " << hostName_ << ", port: " << port_ << ")";
+    throw std::runtime_error(ss.str());
+  }
 }
 
 UdpServer::~UdpServer()
@@ -54,17 +58,16 @@ void UdpServer::readMessages()
 {
   XsByteArray buffer;
 
-  std::cout << "Waiting to receive packets from the client \"" << m_hostName << "\" on port \"" << m_port << "\" ..."
+  std::cout << "Waiting to receive packets from the client \"" << hostName_ << "\" on port \"" << port_ << "\" ..."
             << std::endl
             << std::endl;
 
-  while(!m_stopping)
+  while(!stopping_)
   {
-    // std::cout << ".";
-    int rv = m_socket->read(buffer);
+    socket_->read(buffer);
     if(buffer.size() > 0)
     {
-      auto datagram = m_parserManager->readDatagram(buffer, printDatagrams_);
+      auto datagram = parserManager_->readDatagram(buffer, printDatagrams_);
       switch(datagram->messageType())
       {
         case StreamingProtocol::SPPoseQuaternion:
@@ -168,22 +171,22 @@ void UdpServer::readMessages()
 
   std::cout << "Stopping receiving packets..." << std::endl << std::endl;
 
-  m_stopping = false;
-  m_started = false;
+  stopping_ = false;
+  started_ = false;
 }
 
 void UdpServer::startThread()
 {
-  if(m_started) return;
+  if(started_) return;
 
-  m_started = true;
-  m_stopping = false;
-  m_th = std::thread([this]() { this->readMessages(); });
+  started_ = true;
+  stopping_ = false;
+  th_ = std::thread([this]() { this->readMessages(); });
 }
 
 void UdpServer::stopThread()
 {
-  if(!m_started) return;
-  m_stopping = true;
-  m_th.join();
+  if(!started_) return;
+  stopping_ = true;
+  th_.join();
 }

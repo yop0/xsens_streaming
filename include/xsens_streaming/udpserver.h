@@ -49,15 +49,25 @@
 
 struct Datagram;
 
+/**
+ * @brief Receives data streamed using "Xsens MVN real-time network streaming Protocol Specification"
+ *
+ * For details, please refer to:
+ * https://www.xsens.com/hubfs/Downloads/Manuals/MVN_real-time_network_streaming_protocol_specification.pdf
+ */
 class UdpServer
 {
 public:
+  /**
+   * @brief Construct a new Udp Server object
+   *
+   * @param address Address of the MVN streamer
+   * @param port Port of the MVN streamer
+   *
+   * @throws std::runtime_error when the connection fails to establish
+   */
   UdpServer(XsString address = "localhost", uint16_t port = 9763);
-  ~UdpServer();
-
-  void readMessages();
-  void startThread();
-  void stopThread();
+  virtual ~UdpServer();
 
   std::vector<QuaternionDatagram::Kinematics> quaternions() const
   {
@@ -207,69 +217,74 @@ public:
     comDataCV_.wait(lock, [this] { return isComDataAvail_; });
   }
 
-private:
-  std::thread m_th;
+protected:
+  void readMessages();
+  void startThread();
+  void stopThread();
+
+protected:
+  std::thread th_;
 
   std::vector<QuaternionDatagram::Kinematics> quaternions_;
   mutable std::mutex quaternionMutex_;
   mutable std::condition_variable quaternionCV_;
-  mutable bool isQuaternionAvail_;
+  mutable bool isQuaternionAvail_{false};
 
   std::vector<JointAnglesDatagram::Joint> jointAngles_;
   mutable std::mutex jointAnglesMutex_;
   mutable std::condition_variable jointAnglesCV_;
-  mutable bool isJointAnglesAvail_;
+  mutable bool isJointAnglesAvail_{false};
 
   std::vector<PositionDatagram::VirtualMarkerSet> virtualMarkerPositions_;
   mutable std::mutex virtualMarkerPositionMutex_;
   mutable std::condition_variable virtualMarkerPositionCV_;
-  mutable bool isVirtualMarkerPositionAvail_;
+  mutable bool isVirtualMarkerPositionAvail_{false};
 
   std::vector<LinearSegmentKinematicsDatagram::Kinematics> linearSegmentKinematics_;
   mutable std::mutex linearSegmentKinematicsMutex_;
   mutable std::condition_variable linearSegmentKinematicsCV_;
-  mutable bool isLinearSegmentKinematicAvail_;
+  mutable bool isLinearSegmentKinematicAvail_{false};
 
   std::vector<EulerDatagram::Kinematics> euler_;
   mutable std::mutex eulerMutex_;
   mutable std::condition_variable eulerCV_;
-  mutable bool isEulerAvail_;
+  mutable bool isEulerAvail_{false};
 
   std::vector<AngularSegmentKinematicsDatagram::Kinematics> angularSegmentKinematics_;
   mutable std::mutex angularSegmentKinematicsMutex_;
   mutable std::condition_variable angularSegmentKinematicsCV_;
-  mutable bool isAngularSegmentKinematicsAvail_;
+  mutable bool isAngularSegmentKinematicsAvail_{false};
 
   std::vector<ScaleDatagram::PointDefinition> pointDefinition_;
   std::vector<ScaleDatagram::NullPoseDefinition> nullPoseDefinition_;
   mutable std::mutex dataDefinitionMutex_;
   mutable std::condition_variable dataDefinitionCV_;
   mutable bool isPointDefinitionAvail_;
-  mutable bool isNullPoseDefinitionAvail_;
+  mutable bool isNullPoseDefinitionAvail_{false};
 
   std::vector<TrackerKinematicsDatagram::Kinematics> trackerData_;
   mutable std::mutex trackerDataMutex_;
   mutable std::condition_variable trackerDataCV_;
-  mutable bool isTrackerDataAvail_;
+  mutable bool isTrackerDataAvail_{false};
 
   TimeCodeDatagram::TimeCode timeCode_;
   mutable std::mutex timeCodeMutex_;
   mutable std::condition_variable timeCodeCV_;
-  mutable bool isTimeCodeAvail_;
+  mutable bool isTimeCodeAvail_{false};
 
   CenterOfMassDatagram::Kinematics comData_;
   mutable std::mutex comDataMutex_;
   mutable std::condition_variable comDataCV_;
-  mutable bool isComDataAvail_;
+  mutable bool isComDataAvail_{false};
 
-  std::unique_ptr<XsSocket> m_socket;
-  uint16_t m_port;
-  XsString m_hostName;
+  std::unique_ptr<XsSocket> socket_;
+  uint16_t port_;
+  XsString hostName_;
 
-  std::unique_ptr<ParserManager> m_parserManager;
+  std::unique_ptr<ParserManager> parserManager_;
   bool printDatagrams_ = false;
 
-  volatile std::atomic_bool m_started, m_stopping;
+  volatile std::atomic_bool started_{false}, stopping_{false};
 };
 
 #endif
