@@ -61,16 +61,18 @@ void TimeCodeDatagram::deserializeData(Streamer & inputStreamer)
   int h, m, s, n;
 
   sscanf(str.c_str(), "%d:%d:%d.%d", &h, &m, &s, &n);
-  m_hour = h;
-  m_minute = m;
-  m_second = s;
-  m_nano = 1000000 * n;
+  m_data = {
+      .nano = 1000000 * n,
+      .hour = h,
+      .minute = m,
+      .second = s,
+  };
 }
 
 /*! Print Time Code datagram in a formatted way
  */
 void TimeCodeDatagram::printData() const
 {
-  printf("%d:%d:%d.%d", m_hour, m_minute, m_second, m_nano);
+  printf("%d:%d:%d.%d", m_data.hour, m_data.minute, m_data.second, m_data.nano);
   std::cout << std::endl;
 }

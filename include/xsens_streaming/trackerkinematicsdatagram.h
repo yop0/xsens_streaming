@@ -32,14 +32,6 @@
 class TrackerKinematicsDatagram : public Datagram
 {
 public:
-  TrackerKinematicsDatagram();
-  virtual ~TrackerKinematicsDatagram();
-  virtual void printData() const override;
-
-protected:
-  virtual void deserializeData(Streamer & inputStreamer) override;
-
-private:
   struct Kinematics
   {
     int segmentId;
@@ -50,6 +42,19 @@ private:
     float sen_mag[3];
   };
 
+public:
+  TrackerKinematicsDatagram();
+  virtual ~TrackerKinematicsDatagram();
+  virtual void printData() const override;
+  inline const std::vector<Kinematics> & data() const
+  {
+    return m_data;
+  }
+
+protected:
+  virtual void deserializeData(Streamer & inputStreamer) override;
+
+private:
   std::vector<Kinematics> m_data;
 };
 

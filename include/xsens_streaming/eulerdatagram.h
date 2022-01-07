@@ -25,21 +25,13 @@
 */
 
 #ifndef EULERDATAGRAM_H
-#  define EULERATAGRAM_H
+#define EULERDATAGRAM_H
 
-#  include <xsens_streaming/datagram.h>
+#include <xsens_streaming/datagram.h>
 
 class EulerDatagram : public Datagram
 {
 public:
-  EulerDatagram();
-  virtual ~EulerDatagram();
-  virtual void printData() const override;
-
-protected:
-  virtual void deserializeData(Streamer & inputStreamer) override;
-
-private:
   struct Kinematics
   {
     int32_t segmentId;
@@ -47,6 +39,20 @@ private:
     float rotation[3];
   };
 
+public:
+  EulerDatagram();
+  virtual ~EulerDatagram();
+  virtual void printData() const override;
+
+  inline const std::vector<Kinematics> & data() const
+  {
+    return m_data;
+  }
+
+protected:
+  virtual void deserializeData(Streamer & inputStreamer) override;
+
+private:
   std::vector<Kinematics> m_data;
 };
 

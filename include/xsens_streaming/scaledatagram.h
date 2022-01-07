@@ -31,17 +31,7 @@
 
 class ScaleDatagram : public Datagram
 {
-
 public:
-  ScaleDatagram();
-  virtual ~ScaleDatagram();
-
-  virtual void printData() const override;
-
-protected:
-  virtual void deserializeData(Streamer & inputStreamer) override;
-
-private:
   struct PointDefinition
   {
     int16_t segmentId;
@@ -57,6 +47,24 @@ private:
     float pos[3];
   };
 
+public:
+  ScaleDatagram();
+  virtual ~ScaleDatagram();
+
+  virtual void printData() const override;
+  inline const std::vector<NullPoseDefinition> & nullPoseDefinition() const
+  {
+    return m_tPose;
+  }
+  inline const std::vector<PointDefinition> & pointDefinition() const
+  {
+    return m_pointDefinitions;
+  }
+
+protected:
+  virtual void deserializeData(Streamer & inputStreamer) override;
+
+private:
   void printSegmentData(NullPoseDefinition const & s) const;
   void printViveSegmentData(NullPoseDefinition const & s) const;
   void printPointData(PointDefinition const & p) const;

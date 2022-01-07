@@ -13,8 +13,11 @@ cd xsens_streaming
 mkdir build && cd build
 cmake ..
 make -j8
-sudo make install
+sudo -E make install
 ```
+Replace `cmake ..` with `cmake --DPYTHON_BINDING=OFF ..` to compile without Python bindings. 
+For Anaconda users, `cmake ..` must be replaced with `cmake -DPYTHON_BINDING_USER_INSTALL=ON ..`.  
+
 ## Testing
 
 A sample program is provided to read and print the received data:

@@ -31,19 +31,29 @@
 
 class CenterOfMassDatagram : public Datagram
 {
+public:
+  struct Kinematics
+  {
+    float pos[3];
+    float vel[3];
+    float acc[3];
+  };
 
 public:
   CenterOfMassDatagram();
   virtual ~CenterOfMassDatagram();
   virtual void printData() const override;
 
+  inline const Kinematics & data() const
+  {
+    return m_data;
+  }
+
 protected:
   virtual void deserializeData(Streamer & inputStreamer) override;
 
 private:
-  float m_pos[3];
-  float m_vel[3];
-  float m_acc[3];
+  Kinematics m_data;
 };
 
 #endif

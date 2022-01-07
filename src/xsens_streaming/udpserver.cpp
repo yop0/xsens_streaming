@@ -24,23 +24,29 @@
   OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#include <xsens_streaming/quaterniondatagram.h>
+#include <sstream>
 #include <xsens_streaming/udpserver.h>
 
-UdpServer::UdpServer(XsString address, uint16_t port) : m_started(false), m_stopping(false)
+UdpServer::UdpServer(XsString address, uint16_t port)
 {
-  m_port = port;
-  m_hostName = address;
+  port_ = port;
+  hostName_ = address;
 
-  m_parserManager.reset(new ParserManager());
-  m_socket.reset(new XsSocket(IpProtocol::IP_UDP, NetworkLayerProtocol::NLP_IPV4));
+  parserManager_.reset(new ParserManager());
+  socket_.reset(new XsSocket(IpProtocol::IP_UDP, NetworkLayerProtocol::NLP_IPV4));
 
-  XsResultValue res = m_socket->bind(m_hostName, m_port);
+  XsResultValue res = socket_->bind(hostName_, port_);
 
   if(res == XRV_OK)
+  {
     startThread();
+  }
   else
-    std::cout << "Failed to bind UDP socket (host: " << m_hostName << ", port: " << m_port << ")" << std::endl;
+  {
+    std::stringstream ss;
+    ss << "Failed to bind UDP socket (host: " << hostName_ << ", port: " << port_ << ")";
+    throw std::runtime_error(ss.str());
+  }
 }
 
 UdpServer::~UdpServer()
@@ -52,22 +58,110 @@ void UdpServer::readMessages()
 {
   XsByteArray buffer;
 
-  std::cout << "Waiting to receive packets from the client \"" << m_hostName << "\" on port \"" << m_port << "\" ..."
+  std::cout << "Waiting to receive packets from the client \"" << hostName_ << "\" on port \"" << port_ << "\" ..."
             << std::endl
             << std::endl;
 
-  while(!m_stopping)
+  while(!stopping_)
   {
-    // std::cout << ".";
-    int rv = m_socket->read(buffer);
+    socket_->read(buffer);
     if(buffer.size() > 0)
     {
-      auto datagram = m_parserManager->readDatagram(buffer, printDatagrams_);
-      if(datagram->messageType() == StreamingProtocol::SPPoseQuaternion)
+      auto datagram = parserManager_->readDatagram(buffer, printDatagrams_);
+      switch(datagram->messageType())
       {
-        auto & quaternionDatagram = dynamic_cast<QuaternionDatagram &>(*datagram);
-        std::lock_guard<std::mutex> lock(quaternionMutex_);
-        quaternions_ = quaternionDatagram.data();
+        case StreamingProtocol::SPPoseQuaternion:
+        {
+          auto & quaternionDatagram = dynamic_cast<QuaternionDatagram &>(*datagram);
+          std::lock_guard<std::mutex> lock(quaternionMutex_);
+          quaternions_ = quaternionDatagram.data();
+          isQuaternionAvail_ = true;
+          quaternionCV_.notify_all();
+          break;
+        }
+        case StreamingProtocol::SPJointAngles:
+        {
+          auto & jointAnglesDatagram = dynamic_cast<JointAnglesDatagram &>(*datagram);
+          std::lock_guard<std::mutex> lock(jointAnglesMutex_);
+          jointAngles_ = jointAnglesDatagram.data();
+          isJointAnglesAvail_ = true;
+          jointAnglesCV_.notify_all();
+          break;
+        }
+        case StreamingProtocol::SPPoseEuler:
+        {
+          auto & eulerDatagram = dynamic_cast<EulerDatagram &>(*datagram);
+          std::lock_guard<std::mutex> lock(eulerMutex_);
+          euler_ = eulerDatagram.data();
+          isEulerAvail_ = true;
+          eulerCV_.notify_all();
+          break;
+        }
+        case StreamingProtocol::SPPosePositions:
+        {
+          auto & positionDatagram = dynamic_cast<PositionDatagram &>(*datagram);
+          std::lock_guard<std::mutex> lock(virtualMarkerPositionMutex_);
+          virtualMarkerPositions_ = positionDatagram.data();
+          isVirtualMarkerPositionAvail_ = true;
+          eulerCV_.notify_all();
+          break;
+        }
+        case StreamingProtocol::SPLinearSegmentKinematics:
+        {
+          auto & linearSegmentKinematicsDatagram = dynamic_cast<LinearSegmentKinematicsDatagram &>(*datagram);
+          std::lock_guard<std::mutex> lock(linearSegmentKinematicsMutex_);
+          linearSegmentKinematics_ = linearSegmentKinematicsDatagram.data();
+          isLinearSegmentKinematicAvail_ = true;
+          linearSegmentKinematicsCV_.notify_all();
+          break;
+        }
+        case StreamingProtocol::SPAngularSegmentKinematics:
+        {
+          auto & angularSegmentKinematicsDatagram = dynamic_cast<AngularSegmentKinematicsDatagram &>(*datagram);
+          std::lock_guard<std::mutex> lock(angularSegmentKinematicsMutex_);
+          angularSegmentKinematics_ = angularSegmentKinematicsDatagram.data();
+          isAngularSegmentKinematicsAvail_ = true;
+          angularSegmentKinematicsCV_.notify_all();
+          break;
+        }
+        case StreamingProtocol::SPTrackerKinematics:
+        {
+          auto & trackerKinematicsDatagram = dynamic_cast<TrackerKinematicsDatagram &>(*datagram);
+          std::lock_guard<std::mutex> lock(trackerDataMutex_);
+          trackerData_ = trackerKinematicsDatagram.data();
+          isTrackerDataAvail_ = true;
+          trackerDataCV_.notify_all();
+          break;
+        }
+        case StreamingProtocol::SPMetaScaling:
+        {
+          auto & scaleDatagram = dynamic_cast<ScaleDatagram &>(*datagram);
+          std::lock_guard<std::mutex> lock(dataDefinitionMutex_);
+          pointDefinition_ = scaleDatagram.pointDefinition();
+          nullPoseDefinition_ = scaleDatagram.nullPoseDefinition();
+          isPointDefinitionAvail_ = true;
+          isNullPoseDefinitionAvail_ = true;
+          dataDefinitionCV_.notify_all();
+          break;
+        }
+        case StreamingProtocol::SPTimeCode:
+        {
+          auto & timeCodeDatagram = dynamic_cast<TimeCodeDatagram &>(*datagram);
+          std::lock_guard<std::mutex> lock(timeCodeMutex_);
+          timeCode_ = timeCodeDatagram.data();
+          isTimeCodeAvail_ = true;
+          timeCodeCV_.notify_all();
+          break;
+        }
+        case StreamingProtocol::SPCenterOfMass:
+        {
+          auto & centerOfMassDatagram = dynamic_cast<CenterOfMassDatagram &>(*datagram);
+          std::lock_guard<std::mutex> lock(comDataMutex_);
+          comData_ = centerOfMassDatagram.data();
+          isComDataAvail_ = true;
+          comDataCV_.notify_all();
+          break;
+        }
       }
     }
 
@@ -77,22 +171,22 @@ void UdpServer::readMessages()
 
   std::cout << "Stopping receiving packets..." << std::endl << std::endl;
 
-  m_stopping = false;
-  m_started = false;
+  stopping_ = false;
+  started_ = false;
 }
 
 void UdpServer::startThread()
 {
-  if(m_started) return;
+  if(started_) return;
 
-  m_started = true;
-  m_stopping = false;
-  m_th = std::thread([this]() { this->readMessages(); });
+  started_ = true;
+  stopping_ = false;
+  th_ = std::thread([this]() { this->readMessages(); });
 }
 
 void UdpServer::stopThread()
 {
-  if(!m_started) return;
-  m_stopping = true;
-  m_th.join();
+  if(!started_) return;
+  stopping_ = true;
+  th_.join();
 }
