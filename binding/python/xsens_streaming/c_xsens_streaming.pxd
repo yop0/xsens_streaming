@@ -84,9 +84,6 @@ cdef extern from "<xsens_streaming/udpserver.h>":
         UdpServer(unsigned int port)
         UdpServer()
 
-        void startThread()
-        void stopThread()
-        void readMessages() 
         void printDatagrams(cppbool enable_print)
 
         vector[JointAngles] jointAngles()

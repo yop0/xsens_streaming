@@ -9,15 +9,6 @@ cdef class UdpServer(object):
     def __dealloc__(self): 
         del self.impl
 
-    def startThread(self): 
-        self.impl.startThread()
-
-    def stopThread(self):
-        self.impl.stopThread() 
-
-    def readMessages(self):
-        self.impl.readMessages()
-
     def printDatagrams(self, enable_print: bool):
         self.impl.printDatagrams(enable_print)
 
